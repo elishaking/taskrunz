@@ -54,7 +54,7 @@ class HomePage extends StatelessWidget{
           children: <Widget>[
             CircleAvatar(
               child: Image(
-                image: AssetImage('assets/pic.png'),
+                image: AssetImage('assets/passport.png'),
               ),
             ),
             SizedBox(height: 20,),
