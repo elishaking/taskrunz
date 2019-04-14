@@ -9,6 +9,7 @@ import './task.dart';
 class HomePage extends StatelessWidget{
   final List<TaskGroup> _taskGroups = [
     TaskGroup(
+      idx: 1,
       icon: Icons.work,
       name: 'Work',
       numTask: '13',
@@ -16,6 +17,7 @@ class HomePage extends StatelessWidget{
       color: Colors.blue
     ),
     TaskGroup(
+      idx: 2,
       icon: Icons.person,
       name: 'Personal',
       numTask: '10',
@@ -23,6 +25,7 @@ class HomePage extends StatelessWidget{
       color: Colors.orange
     ),
     TaskGroup(
+      idx: 3,
       icon: Icons.home,
       name: 'Home',
       numTask: '20',
@@ -50,23 +53,29 @@ class HomePage extends StatelessWidget{
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Icon(taskGroup.icon, color: taskGroup.color,),
+                Hero(
+                  tag: 'icon' + taskGroup.idx.toString(),
+                  child: Icon(taskGroup.icon, color: taskGroup.color,),
+                ),
                 Expanded(child: Container(),),
                 customText.TinyText(text: '${taskGroup.numTask} Tasks', textColor: Colors.grey,),
                 SizedBox(height: 10,),
                 customText.TitleText(text: '${taskGroup.name}', textColor: Colors.black,),
                 SizedBox(height: 15,),
-                Row(
-                  children: <Widget>[
-                    Stack(
-                      children: <Widget>[
-                        Container(height: 3, width: proressIndicatorWidth, color: taskGroup.color.withOpacity(0.3),),
-                        Container(height: 3, width: progress, color: taskGroup.color,),
-                      ],
-                    ),
-                    SizedBox(width: 7,),
-                    customText.TinyText(text: '${progress.toInt().toString()} %', textColor: taskGroup.color,)
-                  ],
+                Hero(
+                  tag: 'progress' + taskGroup.idx.toString(),
+                  child: Row(
+                    children: <Widget>[
+                      Stack(
+                        children: <Widget>[
+                          Container(height: 3, width: proressIndicatorWidth, color: taskGroup.color.withOpacity(0.3),),
+                          Container(height: 3, width: progress, color: taskGroup.color,),
+                        ],
+                      ),
+                      SizedBox(width: 7,),
+                      customText.TinyText(text: '${progress.toInt().toString()} %', textColor: taskGroup.color,)
+                    ],
+                  ),
                 )
               ],
             ),
