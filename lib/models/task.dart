@@ -19,10 +19,17 @@ class Task{
 
   Task({this.id, this.info, this.dateTime, this.done});
 
+  // Task.fromMap(Map<String, dynamic> map) {
+  //   id = map['_id'];
+  //   info = map['info'];
+  //   dateTime = map['date_time'];
+  //   done = map['done'];
+  // }
+
   Map<String, dynamic> toMap() {
     var taskMap = <String, dynamic>{
       'info': info,
-      'dateTime': dateTime,
+      'date_time': dateTime,
       'done': done
     };
     if (id != null) {

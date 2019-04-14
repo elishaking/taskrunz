@@ -3,40 +3,14 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../models/task.dart';
+
 // database table and column names
-final String tableWords = 'words';
+final String tasksTable = 'tasks';
 final String columnId = '_id';
-final String columnWord = 'word';
-final String columnFrequency = 'frequency';
-
-// data model class
-// class Word {
-
-//   int id;
-//   String word;
-//   int frequency;
-
-//   Word();
-
-//   // convenience constructor to create a Word object
-//   Word.fromMap(Map<String, dynamic> map) {
-//     id = map[columnId];
-//     word = map[columnWord];
-//     frequency = map[columnFrequency];
-//   }
-
-//   // convenience method to create a Map from this Word object
-//   Map<String, dynamic> toMap() {
-//     var map = <String, dynamic>{
-//       columnWord: word,
-//       columnFrequency: frequency
-//     };
-//     if (id != null) {
-//       map[columnId] = id;
-//     }
-//     return map;
-//   }
-// }
+final String columnInfo = 'info';
+final String columnDateTime = 'date_time';
+final String columnDone = 'done';
 
 // singleton class to manage the database
 class DatabaseHelper {
@@ -72,53 +46,60 @@ class DatabaseHelper {
   // SQL string to create the database 
   Future _onCreate(Database db, int version) async {
     await db.execute('''
-          CREATE TABLE $tableWords (
+          CREATE TABLE $tasksTable (
             $columnId INTEGER PRIMARY KEY,
-            $columnWord TEXT NOT NULL,
-            $columnFrequency INTEGER NOT NULL
+            $columnInfo TEXT NOT NULL,
+            $columnDateTime TEXT NOT NULL,
+            $columnDone INTEGER NOT NULL
           )
           ''');
   }
 
   // Database helper methods:
 
-  Future<int> insert(String tableName, dynamic dataMap) async {
+  Future<int> insert(Task task) async {
     Database db = await database;
-    int id = await db.insert(tableName, dataMap);
+    int id = await db.insert(tasksTable, task.toMap());
     return id;
   }
 
-  Future<dynamic> query(dynamic where, List<String> columns, List<String> whereArgs, String tableName) async {
+  Future<Task> queryWhereId(int id) async {
     Database db = await database;
-    List<Map> maps = await db.query(
-        // tableWords,
-        // columns: [columnId, columnWord, columnFrequency],
-        // where: '$columnId = ?',
-        // whereArgs: [id]
-        tableName,
-        columns: columns,
-        where: '$where = ?',
-        whereArgs: whereArgs
-    );
+    List<Map> maps = await db.query(tasksTable,
+        columns: [columnId, columnInfo, columnDateTime, columnDone],
+        where: '$columnId = ?',
+        whereArgs: [id]);
     if (maps.length > 0) {
-      // return Word.fromMap(maps.first);
-      return maps.first;
+      // return Task.fromMap(maps.first);
+      dynamic taskMap = maps.first;
+      return Task(
+        id: taskMap['_id'],
+        info: taskMap['info'],
+        dateTime: taskMap['date_time'],
+        done: taskMap['done']
+      );
     }
     return null;
   }
 
+  read() async {
+    DatabaseHelper helper = DatabaseHelper.instance;
+    int rowId = 1;
+    Task task = await helper.queryWhereId(rowId);
+    if (task == null) {
+      print('read row $rowId: empty');
+    } else {
+      print('read row $rowId: ${task.info}');
+    }
+  }
+
+  save(Task task) async {
+    DatabaseHelper helper = DatabaseHelper.instance;
+    int id = await helper.insert(task);
+    print('inserted row: $id');
+  }
+
   // TODO: queryAllWords()
   // TODO: delete(int id)
-  // TODO: update(Word word)
-}
-
-class DBCreateQueries{
-  static const String task = '''
-      CREATE TABLE task_table (
-        _id INTEGER PRIMARY KEY,
-        info TEXT NOT NULL,
-        date_time TEXT NOT NULL
-        done INTEGER NOT NULL
-      )
-      ''';
+  // TODO: update(Task task)
 }
