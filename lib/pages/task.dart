@@ -24,6 +24,13 @@ class _TaskPageState extends State<TaskPage>{
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.white,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios, color: widget.taskGroup.color,),
+          onPressed: (){
+            Navigator.of(context).pop();
+          },
+        ),
+
       ),
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),

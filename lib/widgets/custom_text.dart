@@ -19,7 +19,7 @@ class HeadlineText extends StatelessWidget{
 
     return Text(text,
       style: TextStyle(
-        fontFamily: 'Montserrat',
+        // fontFamily: 'Montserrat',
         fontWeight: FontWeight.w900,
         fontSize: _getSize(33),
         color: textColor,

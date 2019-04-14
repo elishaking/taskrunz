@@ -34,8 +34,14 @@ class HomePage extends StatelessWidget{
     ),
   ];
 
+  double _targetWidth = 0;
+
+  double _getSize(final double default_1440){
+    return (default_1440 / 14) * (0.0027 * _targetWidth + 10.136);
+  }
+
   Widget _buildTaskGroup(BuildContext context, TaskGroup taskGroup){
-    final double proressIndicatorWidth = 120;
+    final double proressIndicatorWidth = _getSize(230);
     final double progress = ((double.parse(taskGroup.numTasksCompleted) / double.parse(taskGroup.numTask)) * proressIndicatorWidth).roundToDouble();
     return GestureDetector(
       onTap: (){
@@ -44,8 +50,8 @@ class HomePage extends StatelessWidget{
         ));
       },
       child: Container(
-        width: 200,
-        height: 200,
+        width: _getSize(350),
+        height: _getSize(400),
         child: Card(
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
@@ -61,10 +67,11 @@ class HomePage extends StatelessWidget{
                 customText.TinyText(text: '${taskGroup.numTask} Tasks', textColor: Colors.grey,),
                 SizedBox(height: 10,),
                 customText.TitleText(text: '${taskGroup.name}', textColor: Colors.black,),
-                SizedBox(height: 15,),
+                SizedBox(height: _getSize(20),),
                 Hero(
                   tag: 'progress' + taskGroup.idx.toString(),
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Stack(
                         children: <Widget>[
@@ -72,7 +79,6 @@ class HomePage extends StatelessWidget{
                           Container(height: 3, width: progress, color: taskGroup.color,),
                         ],
                       ),
-                      SizedBox(width: 7,),
                       customText.TinyText(text: '${progress.toInt().toString()} %', textColor: taskGroup.color,)
                     ],
                   ),
@@ -87,6 +93,8 @@ class HomePage extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
+    _targetWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       backgroundColor: Colors.orange,
       drawer: Drawer(),
@@ -101,17 +109,13 @@ class HomePage extends StatelessWidget{
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            SizedBox(height: 30,),
-            Container(
-              alignment: Alignment.center,
-              child: CircleAvatar(
-                backgroundColor: Colors.white,
-                child: Image(
-                  image: AssetImage('assets/passport.png'),
-                ),
-              ),
+            SizedBox(height: _getSize(20),),
+            CircleAvatar(
+              // backgroundColor: Colors.white,
+              radius: 40,
+              backgroundImage: AssetImage('assets/passport.png'),
             ),
-            SizedBox(height: 20,),
+            SizedBox(height: _getSize(30),),
             customText.HeadlineText(
               text: 'Hello King',
             ),
