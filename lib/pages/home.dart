@@ -4,6 +4,8 @@ import '../models/task.dart';
 
 import '../widgets/custom_text.dart' as customText;
 
+import './task.dart';
+
 class HomePage extends StatelessWidget{
   final List<TaskGroup> _taskGroups = [
     TaskGroup(
@@ -29,38 +31,45 @@ class HomePage extends StatelessWidget{
     ),
   ];
 
-  Widget _buildTaskGroup(TaskGroup taskGroup){
+  Widget _buildTaskGroup(BuildContext context, TaskGroup taskGroup){
     final double proressIndicatorWidth = 120;
     final double progress = ((double.parse(taskGroup.numTasksCompleted) / double.parse(taskGroup.numTask)) * proressIndicatorWidth).roundToDouble();
-    return Container(
-      width: 200,
-      height: 200,
-      child: Card(
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-          margin: EdgeInsets.only(right: 5),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Icon(taskGroup.icon, color: taskGroup.color,),
-              Expanded(child: Container(),),
-              customText.TinyText(text: '${taskGroup.numTask} Tasks', textColor: Colors.grey,),
-              SizedBox(height: 10,),
-              customText.TitleText(text: '${taskGroup.name}', textColor: Colors.black,),
-              SizedBox(height: 15,),
-              Row(
-                children: <Widget>[
-                  Stack(
-                    children: <Widget>[
-                      Container(height: 3, width: proressIndicatorWidth, color: taskGroup.color.withOpacity(0.3),),
-                      Container(height: 3, width: progress, color: taskGroup.color,),
-                    ],
-                  ),
-                  SizedBox(width: 7,),
-                  customText.TinyText(text: '${progress.toInt().toString()} %', textColor: taskGroup.color,)
-                ],
-              )
-            ],
+    return GestureDetector(
+      onTap: (){
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (BuildContext context) => TaskPage(taskGroup)
+        ));
+      },
+      child: Container(
+        width: 200,
+        height: 200,
+        child: Card(
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+            margin: EdgeInsets.only(right: 5),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Icon(taskGroup.icon, color: taskGroup.color,),
+                Expanded(child: Container(),),
+                customText.TinyText(text: '${taskGroup.numTask} Tasks', textColor: Colors.grey,),
+                SizedBox(height: 10,),
+                customText.TitleText(text: '${taskGroup.name}', textColor: Colors.black,),
+                SizedBox(height: 15,),
+                Row(
+                  children: <Widget>[
+                    Stack(
+                      children: <Widget>[
+                        Container(height: 3, width: proressIndicatorWidth, color: taskGroup.color.withOpacity(0.3),),
+                        Container(height: 3, width: progress, color: taskGroup.color,),
+                      ],
+                    ),
+                    SizedBox(width: 7,),
+                    customText.TinyText(text: '${progress.toInt().toString()} %', textColor: taskGroup.color,)
+                  ],
+                )
+              ],
+            ),
           ),
         ),
       ),
@@ -109,7 +118,7 @@ class HomePage extends StatelessWidget{
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
-                children: List.generate(_taskGroups.length, (int index) => _buildTaskGroup(_taskGroups[index])),
+                children: List.generate(_taskGroups.length, (int index) => _buildTaskGroup(context, _taskGroups[index])),
               ),
             )
           ],
