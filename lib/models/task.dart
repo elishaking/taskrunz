@@ -7,8 +7,9 @@ class TaskGroup{
   final String numTask;
   final String numTasksCompleted;
   final Color color;
+  final double progressPercent;
 
-  TaskGroup({this.idx, this.icon, this.name, this.numTask, this.numTasksCompleted, this.color});
+  TaskGroup({this.idx, this.icon, this.name, this.numTask, this.progressPercent, this.numTasksCompleted, this.color});
 }
 
 class Task{

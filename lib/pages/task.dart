@@ -26,19 +26,22 @@ class _TaskPageState extends State<TaskPage>{
   Widget build(BuildContext context) {
     _targetWidth = MediaQuery.of(context).size.width;
 
-    final double proressIndicatorWidth = _getSize(410);
+    final double proressIndicatorWidth = _getSize(400);
     final double progress = ((double.parse(widget.taskGroup.numTasksCompleted) / double.parse(widget.taskGroup.numTask)) * proressIndicatorWidth).roundToDouble();
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.white,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: widget.taskGroup.color,),
-          onPressed: (){
-            Navigator.of(context).pop();
-          },
+        backgroundColor: Colors.transparent,
+        iconTheme: IconThemeData(
+          color: widget.taskGroup.color
         ),
+        // leading: IconButton(
+        //   icon: Icon(Icons.arrow_back_ios, color: widget.taskGroup.color,),
+        //   onPressed: (){
+        //     Navigator.of(context).pop();
+        //   },
+        // ),
 
       ),
       body: Container(
@@ -67,7 +70,7 @@ class _TaskPageState extends State<TaskPage>{
                       ],
                     ),
                     SizedBox(width: 7,),
-                    customText.TinyText(text: '${progress.toInt().toString()} %', textColor: widget.taskGroup.color,)
+                    customText.TinyText(text: '${widget.taskGroup.progressPercent.toStringAsPrecision(2)} %', textColor: widget.taskGroup.color,)
                   ],
                 ),
               // )

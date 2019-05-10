@@ -14,6 +14,7 @@ class HomePage extends StatelessWidget{
       name: 'Work',
       numTask: '13',
       numTasksCompleted: '7',
+      progressPercent: 7/13 * 100,
       color: Colors.blue
     ),
     TaskGroup(
@@ -22,7 +23,8 @@ class HomePage extends StatelessWidget{
       name: 'Personal',
       numTask: '10',
       numTasksCompleted: '2',
-      color: Colors.orange
+      progressPercent: 2/10 * 100,
+      color: Colors.orange.shade800
     ),
     TaskGroup(
       idx: 3,
@@ -30,6 +32,7 @@ class HomePage extends StatelessWidget{
       name: 'Home',
       numTask: '20',
       numTasksCompleted: '9',
+      progressPercent: 9/20 * 100,
       color: Colors.green
     ),
   ];
@@ -96,12 +99,12 @@ class HomePage extends StatelessWidget{
     _targetWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      backgroundColor: Colors.orange,
+      backgroundColor: Colors.orange.shade800,
       drawer: Drawer(),
       appBar: AppBar(
         title: Text('GOALZZ'),
         centerTitle: true,
-        backgroundColor: Colors.orange,
+        backgroundColor: Colors.orange.shade800,
         elevation: 0,
       ),
       body: Container(
