@@ -29,7 +29,7 @@ class _TaskPageState extends State<TaskPage>{
     _targetWidth = MediaQuery.of(context).size.width;
 
     final double proressIndicatorWidth = _getSize(400);
-    final double progress = ((double.parse(widget.taskGroup.numTasksCompleted) / double.parse(widget.taskGroup.numTask)) * proressIndicatorWidth).roundToDouble();
+    final double progress = ((widget.taskGroup.numTasksCompleted / widget.taskGroup.numTask) * proressIndicatorWidth).roundToDouble();
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(

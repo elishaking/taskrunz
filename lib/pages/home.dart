@@ -12,8 +12,8 @@ class HomePage extends StatelessWidget{
       idx: 1,
       icon: Icons.work,
       name: 'Work',
-      numTask: '13',
-      numTasksCompleted: '7',
+      numTask: 13,
+      numTasksCompleted: 7,
       progressPercent: 7/13 * 100,
       color: Colors.blue
     ),
@@ -21,8 +21,8 @@ class HomePage extends StatelessWidget{
       idx: 2,
       icon: Icons.person,
       name: 'Personal',
-      numTask: '10',
-      numTasksCompleted: '2',
+      numTask: 10,
+      numTasksCompleted: 2,
       progressPercent: 2/10 * 100,
       color: Colors.orange.shade800
     ),
@@ -30,8 +30,8 @@ class HomePage extends StatelessWidget{
       idx: 3,
       icon: Icons.home,
       name: 'Home',
-      numTask: '20',
-      numTasksCompleted: '9',
+      numTask: 20,
+      numTasksCompleted: 9,
       progressPercent: 9/20 * 100,
       color: Colors.green
     ),
@@ -45,7 +45,7 @@ class HomePage extends StatelessWidget{
 
   Widget _buildTaskGroup(BuildContext context, TaskGroup taskGroup){
     final double proressIndicatorWidth = _getSize(230);
-    final double progress = ((double.parse(taskGroup.numTasksCompleted) / double.parse(taskGroup.numTask)) * proressIndicatorWidth).roundToDouble();
+    final double progress = ((taskGroup.numTasksCompleted / taskGroup.numTask) * proressIndicatorWidth).roundToDouble();
     return GestureDetector(
       onTap: (){
         Navigator.of(context).push(MaterialPageRoute(
