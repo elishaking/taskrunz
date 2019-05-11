@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:scoped_model/scoped_model.dart';
 
+import '../scoped-models/main.dart';
 import '../models/task.dart';
 
 import '../widgets/custom_text.dart' as customText;
@@ -8,8 +10,9 @@ import './add_task.dart';
 
 class TaskPage extends StatefulWidget{
   final TaskGroup taskGroup;
+  final MainModel model;
 
-  TaskPage(this.taskGroup);
+  TaskPage(this.taskGroup, this.model);
 
   @override
   State<StatefulWidget> createState() {
@@ -22,6 +25,12 @@ class _TaskPageState extends State<TaskPage>{
 
   double _getSize(final double default_1440){
     return (default_1440 / 14) * (0.0027 * _targetWidth + 10.136);
+  }
+
+  @override
+  void initState() {
+    widget.model.fetchTasks(1);
+    super.initState();
   }
 
   @override

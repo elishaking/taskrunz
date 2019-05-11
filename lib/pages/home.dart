@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:scoped_model/scoped_model.dart';
 
+import '../scoped-models/main.dart';
 import '../models/task.dart';
 
 import '../widgets/custom_text.dart' as customText;
@@ -46,51 +48,55 @@ class HomePage extends StatelessWidget{
   Widget _buildTaskGroup(BuildContext context, TaskGroup taskGroup){
     final double proressIndicatorWidth = _getSize(230);
     final double progress = ((taskGroup.numTasksCompleted / taskGroup.numTask) * proressIndicatorWidth).roundToDouble();
-    return GestureDetector(
-      onTap: (){
-        Navigator.of(context).push(MaterialPageRoute(
-          builder: (BuildContext context) => TaskPage(taskGroup)
-        ));
-      },
-      child: Container(
-        width: _getSize(350),
-        height: _getSize(400),
-        child: Card(
+    return ScopedModelDescendant(
+      builder: (BuildContext context, Widget child, MainModel model){
+        return GestureDetector(
+          onTap: (){
+            Navigator.of(context).push(MaterialPageRoute(
+              builder: (BuildContext context) => TaskPage(taskGroup, model)
+            ));
+          },
           child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-            margin: EdgeInsets.only(right: 5),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Hero(
-                  tag: 'icon' + taskGroup.idx.toString(),
-                  child: Icon(taskGroup.icon, color: taskGroup.color,),
-                ),
-                Expanded(child: Container(),),
-                customText.TinyText(text: '${taskGroup.numTask} Tasks', textColor: Colors.grey,),
-                SizedBox(height: 10,),
-                customText.TitleText(text: '${taskGroup.name}', textColor: Colors.black,),
-                SizedBox(height: _getSize(20),),
-                Hero(
-                  tag: 'progress' + taskGroup.idx.toString(),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Stack(
+            width: _getSize(350),
+            height: _getSize(400),
+            child: Card(
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                margin: EdgeInsets.only(right: 5),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Hero(
+                      tag: 'icon' + taskGroup.idx.toString(),
+                      child: Icon(taskGroup.icon, color: taskGroup.color,),
+                    ),
+                    Expanded(child: Container(),),
+                    customText.TinyText(text: '${taskGroup.numTask} Tasks', textColor: Colors.grey,),
+                    SizedBox(height: 10,),
+                    customText.TitleText(text: '${taskGroup.name}', textColor: Colors.black,),
+                    SizedBox(height: _getSize(20),),
+                    Hero(
+                      tag: 'progress' + taskGroup.idx.toString(),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          Container(height: 3, width: proressIndicatorWidth, color: taskGroup.color.withOpacity(0.3),),
-                          Container(height: 3, width: progress, color: taskGroup.color,),
+                          Stack(
+                            children: <Widget>[
+                              Container(height: 3, width: proressIndicatorWidth, color: taskGroup.color.withOpacity(0.3),),
+                              Container(height: 3, width: progress, color: taskGroup.color,),
+                            ],
+                          ),
+                          customText.TinyText(text: '${progress.toInt().toString()} %', textColor: taskGroup.color,)
                         ],
                       ),
-                      customText.TinyText(text: '${progress.toInt().toString()} %', textColor: taskGroup.color,)
-                    ],
-                  ),
-                )
-              ],
+                    )
+                  ],
+                ),
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 

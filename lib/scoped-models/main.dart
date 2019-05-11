@@ -70,4 +70,15 @@ class TaskModel extends ConnectedModel{
 
     toggleLoading(false);
   }
+
+  Future fetchTasks(int taskGroupIdx) async{
+    toggleLoading(true);
+
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String d = pref.getString('taskGroups');
+    List data = json.decode(d);
+    data.forEach((item) {
+      _taskGroups.add(TaskGroup.fromMap(item));
+    });
+  }
 }
