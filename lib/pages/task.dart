@@ -4,6 +4,8 @@ import '../models/task.dart';
 
 import '../widgets/custom_text.dart' as customText;
 
+import './add_task.dart';
+
 class TaskPage extends StatefulWidget{
   final TaskGroup taskGroup;
 
@@ -84,9 +86,12 @@ class _TaskPageState extends State<TaskPage>{
         ),
       ),
       floatingActionButton: FloatingActionButton(
+        heroTag: 'add_task',
         child: Icon(Icons.add),
         onPressed: (){
-          
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (BuildContext context) => AddTask(widget.taskGroup)
+          ));
         },
         backgroundColor: widget.taskGroup.color,
       ),
