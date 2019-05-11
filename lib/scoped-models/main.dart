@@ -28,7 +28,7 @@ class ConnectedModel extends Model{
 }
 
 class TaskModel extends ConnectedModel{
-  void addTask(Task task, int taskGroupIdx) async{
+  Future addTask(Task task, int taskGroupIdx) async{
     toggleLoading(true);
 
     TaskGroup taskGroup = _taskGroups[taskGroupIdx];

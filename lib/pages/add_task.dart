@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:scoped_model/scoped_model.dart';
 
+import '../scoped-models/main.dart';
 import '../models/task.dart';
 
 class AddTask extends StatefulWidget{
@@ -13,6 +15,7 @@ class AddTask extends StatefulWidget{
 
 class _AddTaskState extends State<AddTask> {
   GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
+  String _text;
 
   @override
   Widget build(BuildContext context) {
@@ -38,17 +41,37 @@ class _AddTaskState extends State<AddTask> {
                     labelText: "Task",
 
                   ),
+                  validator: (String value){
+                    if(value.isEmpty) return 'Enter a new Task';
+                  },
+                  onSaved: (String value){
+                    _text = value;
+                  },
                 )
               ],
             ),
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        heroTag: 'add_task',
-        child: Icon(Icons.add),
-        onPressed: (){
-
+      floatingActionButton: ScopedModelDescendant<MainModel>(
+        builder: (BuildContext context, Widget child, MainModel model){
+          return FloatingActionButton(
+            heroTag: 'add_task',
+            child: Icon(Icons.add),
+            onPressed: (){
+              if(_formKey.currentState.validate()){
+                _formKey.currentState.save();
+                model.addTask(Task(
+                  id: UniqueKey().hashCode,
+                  info: _text,
+                  dateTime: DateTime.now(),
+                  done: false
+                ), 1).then((_){
+                  Navigator.of(context).pop();
+                });
+              }
+            },
+          );
         },
       ),
     );
