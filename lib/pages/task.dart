@@ -79,9 +79,7 @@ class _TaskPageState extends State<TaskPage>{
             SizedBox(height: 20,),
             customText.BodyText(text: 'TODAY', textColor: Colors.grey,),
             SizedBox(height: 20,),
-            Column(
-              // children: List.generate(length, generator),
-            )
+            
           ],
         ),
       ),

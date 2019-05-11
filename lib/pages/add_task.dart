@@ -62,7 +62,7 @@ class _AddTaskState extends State<AddTask> {
               if(_formKey.currentState.validate()){
                 _formKey.currentState.save();
                 model.addTask(Task(
-                  id: UniqueKey().hashCode,
+                  id: widget.taskGroup.tasks.length,
                   info: _text,
                   dateTime: DateTime.now(),
                   done: false

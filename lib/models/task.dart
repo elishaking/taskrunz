@@ -21,7 +21,7 @@ class TaskGroup{
       'numTasksCompleted': numTasksCompleted,
       'color': color.value.toString(),
       'progressPercent': progressPercent.toString(),
-      'tasks': tasks.map((Task task) => task.toMap())
+      'tasks': tasks.map((Task task) => task.toMap()).toList()
     };
   }
 }
