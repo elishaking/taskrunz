@@ -147,7 +147,10 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
           widget.model.saveTasks();
         },
       ),
-      title: Text(task.info),
+      title: Text(task.info, style: task.done ? TextStyle(
+        color: Colors.black54,
+        decoration: TextDecoration.lineThrough,
+      ) : TextStyle(),),
       trailing: customText.TinyText(text: isToday(task.dateTime) ? "Today" : "${months[task.dateTime.month]} ${task.dateTime.day}", textColor: Colors.black,),
       onTap: (){
 
