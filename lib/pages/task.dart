@@ -25,6 +25,8 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
     return (default_1440 / 14) * (0.0027 * widget.deviceWidth + 10.136);
   }
 
+  Map<String, List<Task>> _taskWithDates = Map();
+
   final List<String> months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug',
   'Sep', 'Oct', 'Nov', 'Dec'];
 
@@ -42,7 +44,28 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
     _proressIndicatorWidth = _getSize(380);
     _progressFraction = (widget.taskGroup.numTasksCompleted / widget.taskGroup.numTask);
     animateProgress();
+    
+    _taskWithDates = _createListWithDates();
+    print(_taskWithDates);
     super.initState();
+  }
+
+  Map<String, List<Task>> _createListWithDates(){
+    if(widget.taskGroup.tasks.length == 0) return Map<String, List<Task>>();
+
+    Map<String, List<Task>> map = Map<String, List<Task>>();
+    List<Task> tasks = List.from(widget.taskGroup.tasks);
+    DateTime currentDate = tasks[0].dateTime;
+    for(int i = 0; i < tasks.length; ){
+      if(isDay(tasks[i].dateTime, currentDate.day, currentDate.month)){
+        if(map["${currentDate.month} ${currentDate.day}"] == null) map["${currentDate.month} ${currentDate.day}"] = List<Task>();
+        map["${currentDate.month} ${currentDate.day}"].add(tasks[i]);
+        i++;
+      } else{
+        currentDate = tasks[i].dateTime;
+      }
+    }
+    return map;
   }
 
   @override
