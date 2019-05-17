@@ -108,7 +108,7 @@ class TinyText extends StatelessWidget{
       style: TextStyle(
         // fontFamily: 'Montserrat',
         fontWeight: FontWeight.w400,
-        fontSize: _getSize(12),
+        fontSize: _getSize(13),
         color: textColor,
         // letterSpacing: 2,
       ),

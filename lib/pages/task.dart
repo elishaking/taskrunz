@@ -27,6 +27,9 @@ class _TaskPageState extends State<TaskPage>{
     return (default_1440 / 14) * (0.0027 * _targetWidth + 10.136);
   }
 
+  final List<String> months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug',
+  'Sep', 'Oct', 'Nov', 'Dec'];
+
   @override
   Widget build(BuildContext context) {
     _targetWidth = MediaQuery.of(context).size.width;
@@ -106,16 +109,26 @@ class _TaskPageState extends State<TaskPage>{
 
   ListTile buildTask(Task task) {
     return ListTile(
+      contentPadding: EdgeInsets.only(left: 0),
       leading: Checkbox(
-        value: false,
+        value: task.done,
+        activeColor: widget.taskGroup.color,
         onChanged: (bool value){
-
+          setState(() {
+           task.done = value; 
+          });
         },
       ),
       title: Text(task.info),
+      trailing: customText.TinyText(text: isToday(task.dateTime) ? "Today" : "${months[task.dateTime.month]} ${task.dateTime.day}", textColor: Colors.black,),
       onTap: (){
 
       },
     );
+  }
+
+  bool isToday(DateTime dateTime){
+    DateTime now = DateTime.now();
+    return dateTime.day == now.day && dateTime.month == now.month;
   }
 }
