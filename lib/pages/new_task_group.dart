@@ -26,7 +26,7 @@ class _NewTaskGroupPageState extends State<NewTaskGroupPage> {
   int _selectedIdx = 0;
   List<bool> _selected = [];
 
-  List _icons = [
+  List<IconData> _icons = [
     Icons.work,
     Icons.person,
     Icons.home,

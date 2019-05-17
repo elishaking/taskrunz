@@ -15,7 +15,7 @@ class TaskGroup{
   Map<String, dynamic> toMap(){
     return {
       'idx': idx,
-      'icon': icon.codePoint.toString(),
+      'icon': [icon.codePoint, icon.fontFamily, icon.fontPackage, icon.matchTextDirection],
       'name': name,
       'numTask': numTask,
       'numTasksCompleted': numTasksCompleted,
@@ -28,7 +28,7 @@ class TaskGroup{
   static TaskGroup fromMap(Map<String, dynamic> item){
     return TaskGroup(
       idx: item['idx'],
-      icon: IconData(item[int.parse(item['icon'])]),
+      icon: IconData(item['icon'][0], fontFamily: item['icon'][1], fontPackage: item['icon'][2], matchTextDirection: item['icon'][3]),
       name: item['name'],
       numTask: item['numTask'],
       numTasksCompleted: item['numTasksCompleted'],
