@@ -20,7 +20,7 @@ class TaskPage extends StatefulWidget{
   }
 }
 
-class _TaskPageState extends State<TaskPage>{
+class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin{
   double _targetWidth = 0;
 
   double _getSize(final double default_1440){
@@ -30,14 +30,28 @@ class _TaskPageState extends State<TaskPage>{
   final List<String> months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug',
   'Sep', 'Oct', 'Nov', 'Dec'];
 
+  AnimationController _progressController;
+  Tween<double> _progressTween;
+  Animation<double> _progressAnimation;
+  double _progress = 0;
+  double _proressIndicatorWidth;
+  double _progressFraction;
+
+  @override
+  void initState() {
+    _progressController = new AnimationController(duration: Duration(milliseconds: 1000), vsync: this);
+    // _progressTween = new Tween<double>(begin: 0, end: 300);
+    _progressFraction = (widget.taskGroup.numTasksCompleted / widget.taskGroup.numTask);
+    animateProgress();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     _targetWidth = MediaQuery.of(context).size.width;
 
-    final double proressIndicatorWidth = _getSize(380);
-    final double progressFraction = (widget.taskGroup.numTasksCompleted / widget.taskGroup.numTask);
-    final double progressPercent = progressFraction * 100;
-    final double progress = widget.taskGroup.numTasksCompleted == 0 ? 0 : (progressFraction * proressIndicatorWidth).roundToDouble();
+    _proressIndicatorWidth = _getSize(380);
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -71,18 +85,18 @@ class _TaskPageState extends State<TaskPage>{
             customText.HeadlineText(text: widget.taskGroup.name, textColor: Colors.black,),
             SizedBox(height: 20,),
               // Hero(
-              //   tag: 'progress' + widget.taskGroup.idx.toString(),
+              //   tag: '_progress' + widget.taskGroup.idx.toString(),
               //   child: 
                 Row(
                   children: <Widget>[
                     Stack(
                       children: <Widget>[
-                        Container(height: 3, width: proressIndicatorWidth, color: widget.taskGroup.color.withOpacity(0.3),),
-                        Container(height: 3, width: progress, color: widget.taskGroup.color,),
+                        Container(height: 3, width: _proressIndicatorWidth, color: widget.taskGroup.color.withOpacity(0.3),),
+                        Container(height: 3, width: _progressAnimation.value, color: widget.taskGroup.color,),
                       ],
                     ),
                     SizedBox(width: 7,),
-                    customText.TinyText(text: '${progressPercent.toStringAsFixed(1)} %', textColor: widget.taskGroup.color,)
+                    customText.TinyText(text: '${(_progressFraction * 100).toStringAsFixed(1)} %', textColor: widget.taskGroup.color,)
                   ],
                 ),
               // )
@@ -91,7 +105,7 @@ class _TaskPageState extends State<TaskPage>{
             // SizedBox(height: 20,),
             Container(
               // padding: const EdgeInsets.all(8.0),
-              height: MediaQuery.of(context).size.height,
+              height: MediaQuery.of(context).size.height - 300,
               child: ReorderableListView(
                 children: List.generate(widget.taskGroup.tasks.length, (int index){
                   return buildTask(widget.taskGroup.tasks[index]);
@@ -133,6 +147,8 @@ class _TaskPageState extends State<TaskPage>{
           setState(() {
            task.done = value; 
           });
+          value ? widget.taskGroup.numTasksCompleted++ : widget.taskGroup.numTasksCompleted--;
+          animateProgress();
         },
       ),
       title: Text(task.info),
@@ -143,6 +159,22 @@ class _TaskPageState extends State<TaskPage>{
     );
   }
 
+  void animateProgress() {
+    final double currentProgress = _progress;
+    _progressFraction = (widget.taskGroup.numTasksCompleted / widget.taskGroup.numTask);
+    _progress = widget.taskGroup.numTasksCompleted == 0 ? 0 : (_progressFraction * _proressIndicatorWidth).roundToDouble();
+    
+    _progressTween = new Tween<double>(begin: currentProgress, end: _progress);
+    _progressAnimation = _progressTween.animate(_progressController)
+      ..addListener((){
+        print(_progressAnimation.value);
+        setState(() {
+          
+        });
+      });
+    _progressController.forward();
+  }
+
   bool isDay(DateTime dateTime, int day, int month){
     return dateTime.day == day && dateTime.month == month;
   }
@@ -150,5 +182,11 @@ class _TaskPageState extends State<TaskPage>{
   bool isToday(DateTime dateTime){
     DateTime now = DateTime.now();
     return dateTime.day == now.day && dateTime.month == now.month;
+  }
+
+  @override
+  void dispose() {
+    _progressController.dispose();
+    super.dispose();
   }
 }
