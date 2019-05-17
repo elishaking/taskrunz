@@ -84,18 +84,20 @@ class _HomePageState extends State<HomePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Hero(
-                  tag: 'icon' + taskGroup.idx.toString(),
-                  child: Icon(taskGroup.icon, color: taskGroup.color,),
-                ),
+                // Hero(
+                //   tag: 'icon' + taskGroup.idx.toString(),
+                //   child: 
+                  Icon(taskGroup.icon, color: taskGroup.color,),
+                // ),
                 Expanded(child: Container(),),
                 customText.TinyText(text: '${taskGroup.numTask} Tasks', textColor: Colors.grey,),
                 SizedBox(height: 10,),
                 customText.TitleText(text: '${taskGroup.name}', textColor: Colors.black,),
                 SizedBox(height: _getSize(20),),
-                Hero(
-                  tag: 'progress' + taskGroup.idx.toString(),
-                  child: Row(
+                // Hero(
+                //   tag: 'progress' + taskGroup.idx.toString(),
+                //     child: 
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Stack(
@@ -107,7 +109,7 @@ class _HomePageState extends State<HomePage> {
                       customText.TinyText(text: '${progress.toInt().toString()} %', textColor: taskGroup.color,)
                     ],
                   ),
-                )
+                // )
               ],
             ),
           ),

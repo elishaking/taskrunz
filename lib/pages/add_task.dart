@@ -66,7 +66,7 @@ class _AddTaskState extends State<AddTask> {
                   info: _text,
                   dateTime: DateTime.now(),
                   done: false
-                ), 1).then((_){
+                ), widget.taskGroup).then((_){
                   Navigator.of(context).pop();
                 });
               }

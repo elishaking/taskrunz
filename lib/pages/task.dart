@@ -28,12 +28,6 @@ class _TaskPageState extends State<TaskPage>{
   }
 
   @override
-  void initState() {
-    widget.model.fetchTasks();
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     _targetWidth = MediaQuery.of(context).size.width;
 
@@ -60,10 +54,11 @@ class _TaskPageState extends State<TaskPage>{
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Hero(
-              tag: 'icon' + widget.taskGroup.idx.toString(),
-              child: Icon(widget.taskGroup.icon, color: widget.taskGroup.color,),
-            ),
+            // Hero(
+            //   tag: 'icon' + widget.taskGroup.idx.toString(),
+            //   child: 
+              Icon(widget.taskGroup.icon, color: widget.taskGroup.color,),
+            // ),
             SizedBox(height: 20,),
             customText.BodyText(text: '${widget.taskGroup.numTask} Tasks', textColor: Colors.grey,),
             SizedBox(height: 3,),
@@ -119,7 +114,7 @@ class _TaskPageState extends State<TaskPage>{
       ),
       title: Text(task.info),
       onTap: (){
-        
+
       },
     );
   }
