@@ -9,9 +9,10 @@ import './add_task.dart';
 
 class TaskPage extends StatefulWidget{
   final TaskGroup taskGroup;
+  final deviceWidth;
   final MainModel model;
 
-  TaskPage(this.taskGroup, this.model);
+  TaskPage(this.taskGroup, this.deviceWidth, this.model);
 
   @override
   State<StatefulWidget> createState() {
@@ -20,10 +21,8 @@ class TaskPage extends StatefulWidget{
 }
 
 class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin{
-  double _targetWidth = 0;
-
   double _getSize(final double default_1440){
-    return (default_1440 / 14) * (0.0027 * _targetWidth + 10.136);
+    return (default_1440 / 14) * (0.0027 * widget.deviceWidth + 10.136);
   }
 
   final List<String> months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug',
@@ -40,6 +39,7 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
   void initState() {
     _progressController = new AnimationController(duration: Duration(milliseconds: 300), vsync: this);
     // _progressTween = new Tween<double>(begin: 0, end: 300);
+    _proressIndicatorWidth = _getSize(380);
     _progressFraction = (widget.taskGroup.numTasksCompleted / widget.taskGroup.numTask);
     animateProgress();
     super.initState();
@@ -47,10 +47,6 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
-    _targetWidth = MediaQuery.of(context).size.width;
-
-    _proressIndicatorWidth = _getSize(380);
-
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -148,6 +144,7 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
           });
           value ? widget.taskGroup.numTasksCompleted++ : widget.taskGroup.numTasksCompleted--;
           animateProgress();
+          widget.model.saveTasks();
         },
       ),
       title: Text(task.info),
@@ -189,6 +186,7 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
 
   @override
   void dispose() {
+    // widget.model.saveTasks();
     _progressController.dispose();
     super.dispose();
   }

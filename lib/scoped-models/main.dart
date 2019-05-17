@@ -78,10 +78,14 @@ class TaskModel extends ConnectedModel{
     taskGroup.numTask++;
     taskGroup.progressPercent = (taskGroup.numTask / taskGroup.numTasksCompleted) * 100;
 
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    pref.setString('taskGroups', json.encode(_taskGroups.map((TaskGroup taskGroup) => taskGroup.toMap()).toList()));
+    await saveTasks();
 
     toggleLoading(false);
+  }
+
+  Future saveTasks() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    pref.setString('taskGroups', json.encode(_taskGroups.map((TaskGroup taskGroup) => taskGroup.toMap()).toList()));
   }
 
   Future fetchTasks() async{

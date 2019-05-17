@@ -71,7 +71,7 @@ class _HomePageState extends State<HomePage> {
     return GestureDetector(
       onTap: (){
         Navigator.of(context).push(MaterialPageRoute(
-          builder: (BuildContext context) => TaskPage(taskGroup, widget.model)
+          builder: (BuildContext context) => TaskPage(taskGroup, MediaQuery.of(context).size.width, widget.model)
         ));
       },
       child: Container(
