@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:scoped_model/scoped_model.dart';
 
 import '../scoped-models/main.dart';
 import '../models/task.dart';
@@ -39,7 +38,7 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
 
   @override
   void initState() {
-    _progressController = new AnimationController(duration: Duration(milliseconds: 1000), vsync: this);
+    _progressController = new AnimationController(duration: Duration(milliseconds: 300), vsync: this);
     // _progressTween = new Tween<double>(begin: 0, end: 300);
     _progressFraction = (widget.taskGroup.numTasksCompleted / widget.taskGroup.numTask);
     animateProgress();
@@ -165,9 +164,13 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
     _progress = widget.taskGroup.numTasksCompleted == 0 ? 0 : (_progressFraction * _proressIndicatorWidth).roundToDouble();
     
     _progressTween = new Tween<double>(begin: currentProgress, end: _progress);
-    _progressAnimation = _progressTween.animate(_progressController)
+    _progressController.reset();
+    _progressAnimation = _progressTween.animate(CurvedAnimation(
+      parent: _progressController,
+      curve: Curves.easeInOut
+    ))
       ..addListener((){
-        print(_progressAnimation.value);
+        // print(_progressAnimation.value);
         setState(() {
           
         });
