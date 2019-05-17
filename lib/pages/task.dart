@@ -29,7 +29,7 @@ class _TaskPageState extends State<TaskPage>{
 
   @override
   void initState() {
-    widget.model.fetchTasks(1);
+    widget.model.fetchTasks();
     super.initState();
   }
 

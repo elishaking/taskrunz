@@ -7,39 +7,40 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/task.dart';
 
-class MainModel extends Model with ConnectedModel, TaskModel {}
+class MainModel extends Model with ConnectedModel, TaskGroupModel, TaskModel {}
 
 class ConnectedModel extends Model{
   bool _isLoading = false;
-  List<TaskGroup> _taskGroups = [
-    TaskGroup(
-      idx: 1,
-      icon: Icons.work,
-      name: 'Work',
-      numTask: 13,
-      numTasksCompleted: 7,
-      progressPercent: 7/13 * 100,
-      color: Colors.blue
-    ),
-    TaskGroup(
-      idx: 2,
-      icon: Icons.person,
-      name: 'Personal',
-      numTask: 10,
-      numTasksCompleted: 2,
-      progressPercent: 2/10 * 100,
-      color: Colors.orange.shade800
-    ),
-    TaskGroup(
-      idx: 3,
-      icon: Icons.home,
-      name: 'Home',
-      numTask: 20,
-      numTasksCompleted: 9,
-      progressPercent: 9/20 * 100,
-      color: Colors.green
-    ),
-  ];
+  List<TaskGroup> _taskGroups = new List<TaskGroup>();
+  // [
+  //   TaskGroup(
+  //     idx: 1,
+  //     icon: Icons.work,
+  //     name: 'Work',
+  //     numTask: 13,
+  //     numTasksCompleted: 7,
+  //     progressPercent: 7/13 * 100,
+  //     color: Colors.blue
+  //   ),
+  //   TaskGroup(
+  //     idx: 2,
+  //     icon: Icons.person,
+  //     name: 'Personal',
+  //     numTask: 10,
+  //     numTasksCompleted: 2,
+  //     progressPercent: 2/10 * 100,
+  //     color: Colors.orange.shade800
+  //   ),
+  //   TaskGroup(
+  //     idx: 3,
+  //     icon: Icons.home,
+  //     name: 'Home',
+  //     numTask: 20,
+  //     numTasksCompleted: 9,
+  //     progressPercent: 9/20 * 100,
+  //     color: Colors.green
+  //   ),
+  // ];
   // List<Task> _task = List<Task>();
 
   bool get isLoading{
@@ -53,6 +54,19 @@ class ConnectedModel extends Model{
   void toggleLoading(bool value){
     _isLoading = value;
     notifyListeners();
+  }
+}
+
+class TaskGroupModel extends ConnectedModel{
+  Future addTaskGroup(TaskGroup taskGroup) async{
+    toggleLoading(true);
+
+    _taskGroups.add(taskGroup);
+
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    pref.setString('taskGroups', json.encode(_taskGroups.map((TaskGroup taskGroup) => taskGroup.toMap()).toList()));
+
+    toggleLoading(false);
   }
 }
 
@@ -71,14 +85,17 @@ class TaskModel extends ConnectedModel{
     toggleLoading(false);
   }
 
-  Future fetchTasks(int taskGroupIdx) async{
+  Future fetchTasks() async{
     toggleLoading(true);
 
     SharedPreferences pref = await SharedPreferences.getInstance();
     String d = pref.getString('taskGroups');
-    List data = json.decode(d);
-    data.forEach((item) {
-      _taskGroups.add(TaskGroup.fromMap(item));
-    });
+    if(d != null){
+      List data = json.decode(d);
+      data.forEach((item) {
+        _taskGroups.add(TaskGroup.fromMap(item));
+      });
+    }
+    toggleLoading(false);
   }
 }

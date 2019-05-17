@@ -8,11 +8,12 @@ import './pages/home.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+  MainModel _model = MainModel();
+
   @override
   Widget build(BuildContext context) {
     return ScopedModel<MainModel>(
-      model: MainModel(),
+      model: _model,
       child: MaterialApp(
         title: 'Goalzz',
         theme: ThemeData(
@@ -28,7 +29,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
           fontFamily: 'Nunito'
         ),
-        home: HomePage(),
+        home: HomePage(_model),
       ),
     );
   }
