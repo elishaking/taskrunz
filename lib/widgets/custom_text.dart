@@ -7,24 +7,24 @@ class HeadlineText extends StatelessWidget{
 
   HeadlineText({this.text, this.textColor = Colors.white, this.textAlign = TextAlign.left});
 
-  double _targetWidth = 0;
+  // double _targetWidth = 0;
 
-  double _getSize(final double default_1440){
-    return (default_1440 / 14) * (0.0027 * _targetWidth + 10.136);
-  }
+  // double _getSize(final double default_1440){
+  //   return (default_1440 / 14) * (0.0027 * _targetWidth + 10.136);
+  // }
 
   @override
   Widget build(BuildContext context) {
-    _targetWidth = MediaQuery.of(context).size.width;
+    // _targetWidth = MediaQuery.of(context).size.width;
 
     return Text(text,
-      style: TextStyle(
+      style: Theme.of(context).textTheme.headline.merge(TextStyle(
         // fontFamily: 'Montserrat',
         fontWeight: FontWeight.w900,
-        fontSize: _getSize(33),
+        // fontSize: _getSize(33),
         color: textColor,
         letterSpacing: 2,
-      ),
+      )),
       textAlign: textAlign,
     );
   }
@@ -67,20 +67,20 @@ class BodyText extends StatelessWidget{
 
   BodyText({this.text, this.textColor = Colors.white, this.textAlign = TextAlign.left, this.textOverflow = TextOverflow.ellipsis, this.fontWeight = FontWeight.normal});
 
-  double _getTextSize(final double targetWidth){
-    // at 1440px width, fontsize = 14
-    return 0.0027 * targetWidth + 10.136;
-  }
+  // double _getTextSize(final double targetWidth){
+  //   // at 1440px width, fontsize = 14
+  //   return 0.0027 * targetWidth + 10.136;
+  // }
 
   @override
   Widget build(BuildContext context) {
     return Text(text,
-      style: TextStyle(
+      style: Theme.of(context).textTheme.body1.merge(TextStyle(
           // fontFamily: 'Lato',
-          fontSize: _getTextSize(MediaQuery.of(context).size.width),
+          // fontSize: _getTextSize(MediaQuery.of(context).size.width),
           color: textColor,
           fontWeight: fontWeight
-      ),
+      )),
       textAlign: textAlign,
       overflow: textOverflow,
     );

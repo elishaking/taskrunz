@@ -37,8 +37,8 @@ class _TaskPageState extends State<TaskPage>{
   Widget build(BuildContext context) {
     _targetWidth = MediaQuery.of(context).size.width;
 
-    final double proressIndicatorWidth = _getSize(400);
-    final double progress = ((widget.taskGroup.numTasksCompleted / widget.taskGroup.numTask) * proressIndicatorWidth).roundToDouble();
+    final double proressIndicatorWidth = _getSize(380);
+    final double progress = widget.taskGroup.numTask == 0 ? 0 : ((widget.taskGroup.numTasksCompleted / widget.taskGroup.numTask) * proressIndicatorWidth).roundToDouble();
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -86,9 +86,13 @@ class _TaskPageState extends State<TaskPage>{
                 ),
               // )
             SizedBox(height: 20,),
-            customText.BodyText(text: 'TODAY', textColor: Colors.grey,),
-            SizedBox(height: 20,),
-            
+            // customText.BodyText(text: 'TODAY', textColor: Colors.grey,),
+            // SizedBox(height: 20,),
+            Column(
+              children: List.generate(widget.taskGroup.tasks.length, (int index){
+                return buildTask(widget.taskGroup.tasks[index]);
+              }),
+            )
           ],
         ),
       ),
@@ -102,6 +106,21 @@ class _TaskPageState extends State<TaskPage>{
         },
         backgroundColor: widget.taskGroup.color,
       ),
+    );
+  }
+
+  ListTile buildTask(Task task) {
+    return ListTile(
+      leading: Checkbox(
+        value: false,
+        onChanged: (bool value){
+
+        },
+      ),
+      title: Text(task.info),
+      onTap: (){
+        
+      },
     );
   }
 }
