@@ -67,7 +67,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildTaskGroup(BuildContext context, TaskGroup taskGroup){
     final double proressIndicatorWidth = _getSize(230);
-    final double progress = taskGroup.numTask == 0 ? 0 : ((taskGroup.numTasksCompleted / taskGroup.numTask) * proressIndicatorWidth).roundToDouble();
+    final double progress = taskGroup.numTasksCompleted == 0 ? 0 : ((taskGroup.numTasksCompleted / taskGroup.numTask) * proressIndicatorWidth).roundToDouble();
     return GestureDetector(
       onTap: (){
         Navigator.of(context).push(MaterialPageRoute(
@@ -106,7 +106,7 @@ class _HomePageState extends State<HomePage> {
                           Container(height: 3, width: progress, color: taskGroup.color,),
                         ],
                       ),
-                      customText.TinyText(text: '${progress.toInt().toString()} %', textColor: taskGroup.color,)
+                      customText.TinyText(text: '${progress.toStringAsFixed(1)} %', textColor: taskGroup.color,)
                     ],
                   ),
                 // )

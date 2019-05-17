@@ -35,7 +35,9 @@ class _TaskPageState extends State<TaskPage>{
     _targetWidth = MediaQuery.of(context).size.width;
 
     final double proressIndicatorWidth = _getSize(380);
-    final double progress = widget.taskGroup.numTask == 0 ? 0 : ((widget.taskGroup.numTasksCompleted / widget.taskGroup.numTask) * proressIndicatorWidth).roundToDouble();
+    final double progressFraction = (widget.taskGroup.numTasksCompleted / widget.taskGroup.numTask);
+    final double progressPercent = progressFraction * 100;
+    final double progress = widget.taskGroup.numTasksCompleted == 0 ? 0 : (progressFraction * proressIndicatorWidth).roundToDouble();
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -56,6 +58,7 @@ class _TaskPageState extends State<TaskPage>{
         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             // Hero(
             //   tag: 'icon' + widget.taskGroup.idx.toString(),
@@ -79,17 +82,29 @@ class _TaskPageState extends State<TaskPage>{
                       ],
                     ),
                     SizedBox(width: 7,),
-                    customText.TinyText(text: '${widget.taskGroup.progressPercent.toStringAsPrecision(2)} %', textColor: widget.taskGroup.color,)
+                    customText.TinyText(text: '${progressPercent.toStringAsFixed(1)} %', textColor: widget.taskGroup.color,)
                   ],
                 ),
               // )
             SizedBox(height: 20,),
             // customText.BodyText(text: 'TODAY', textColor: Colors.grey,),
             // SizedBox(height: 20,),
-            Column(
-              children: List.generate(widget.taskGroup.tasks.length, (int index){
-                return buildTask(widget.taskGroup.tasks[index]);
-              }),
+            Container(
+              // padding: const EdgeInsets.all(8.0),
+              height: MediaQuery.of(context).size.height,
+              child: ReorderableListView(
+                children: List.generate(widget.taskGroup.tasks.length, (int index){
+                  return buildTask(widget.taskGroup.tasks[index]);
+                }),
+                onReorder: (int prevPos, int newPos){
+                  print("$prevPos $newPos");
+                  Task movedTask = widget.taskGroup.tasks[prevPos];
+                  setState(() {
+                   widget.taskGroup.tasks.removeAt(prevPos);
+                   widget.taskGroup.tasks.insert(newPos, movedTask); 
+                  });
+                },
+              ),
             )
           ],
         ),
@@ -109,6 +124,7 @@ class _TaskPageState extends State<TaskPage>{
 
   ListTile buildTask(Task task) {
     return ListTile(
+      key: UniqueKey(),
       contentPadding: EdgeInsets.only(left: 0),
       leading: Checkbox(
         value: task.done,
@@ -125,6 +141,10 @@ class _TaskPageState extends State<TaskPage>{
 
       },
     );
+  }
+
+  bool isDay(DateTime dateTime, int day, int month){
+    return dateTime.day == day && dateTime.month == month;
   }
 
   bool isToday(DateTime dateTime){
