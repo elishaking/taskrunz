@@ -38,6 +38,8 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
   double _proressIndicatorWidth;
   double _progressFraction;
 
+  bool _showHistorySheet = false;
+
   @override
   void initState() {
     _progressController = new AnimationController(duration: Duration(milliseconds: 300), vsync: this);
@@ -103,7 +105,10 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
-    Timer(Duration(seconds: 2), () => _displayHistory(context));
+    if(!_showHistorySheet && _taskWithDates.length > 0){
+      Timer(Duration(seconds: 2), () => _displayHistory(context));
+      _showHistorySheet = true;
+    }
 
     return Scaffold(
       backgroundColor: Colors.white,
