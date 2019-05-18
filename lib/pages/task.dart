@@ -160,8 +160,8 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
                 ),
               // )
             SizedBox(height: 20,),
-            // customText.BodyText(text: 'TODAY', textColor: Colors.grey,),
-            // SizedBox(height: 20,),
+            customText.BodyText(text: 'TODAY', textColor: Colors.grey,),
+            SizedBox(height: 20,),
             Container(
               // padding: const EdgeInsets.all(8.0),
               height: MediaQuery.of(context).size.height - 300,
@@ -250,30 +250,48 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
     );
   }
 
-  ListTile buildTask(Task task) {
-    return ListTile(
+  Widget buildTask(Task task) {
+    return Dismissible(
       key: UniqueKey(),
-      contentPadding: EdgeInsets.only(left: 0),
-      leading: Checkbox(
-        value: task.done,
-        activeColor: widget.taskGroup.color,
-        onChanged: (bool value){
-          setState(() {
-           task.done = value; 
-          });
-          value ? widget.taskGroup.numTasksCompleted++ : widget.taskGroup.numTasksCompleted--;
-          animateProgress();
-          widget.model.saveTasks();
-        },
+      direction: DismissDirection.endToStart,
+      background: Container(
+        alignment: Alignment.centerRight,
+        padding: EdgeInsets.only(right: 10),
+        color: Colors.grey,
+        child: Icon(Icons.delete_forever, color: Colors.white, size: 30,),
       ),
-      title: Text(task.info, style: task.done ? TextStyle(
-        color: Colors.black54,
-        decoration: TextDecoration.lineThrough,
-      ) : TextStyle(),),
-      trailing: customText.BodyText(text: isToday(task.dateTime) ? "Today" : "${months[task.dateTime.month]} ${task.dateTime.day}", textColor: Colors.black87,),
-      onTap: (){
+      onDismissed: (DismissDirection dir){
 
       },
+      child: ListTile(
+        contentPadding: EdgeInsets.only(left: 0),
+        leading: Checkbox(
+          value: task.done,
+          activeColor: widget.taskGroup.color,
+          onChanged: (bool value){
+            setState(() {
+             task.done = value; 
+            });
+            value ? widget.taskGroup.numTasksCompleted++ : widget.taskGroup.numTasksCompleted--;
+            animateProgress();
+            widget.model.saveTasks();
+          },
+        ),
+        title: Text(task.info, style: task.done ? TextStyle(
+          color: Colors.black54,
+          decoration: TextDecoration.lineThrough,
+        ) : TextStyle(),),
+        // trailing: customText.BodyText(text: isToday(task.dateTime) ? "Today" : "${months[task.dateTime.month]} ${task.dateTime.day}", textColor: Colors.black87,),
+        trailing: IconButton(
+          icon: Icon(Icons.delete_forever),
+          onPressed: (){
+            
+          },
+        ),
+        onTap: (){
+
+        },
+      ),
     );
   }
 
