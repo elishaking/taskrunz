@@ -74,7 +74,7 @@ class TaskModel extends ConnectedModel{
   Future addTask(Task task, TaskGroup taskGroup) async{
     toggleLoading(true);
 
-    taskGroup.tasks.add(task);
+    taskGroup.tasks.insert(0, task);
     taskGroup.numTask++;
     taskGroup.progressPercent = (taskGroup.numTask / taskGroup.numTasksCompleted) * 100;
 

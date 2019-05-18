@@ -58,6 +58,7 @@ class _AddTaskState extends State<AddTask> {
           return FloatingActionButton(
             heroTag: 'add_task',
             child: Icon(Icons.add),
+            backgroundColor: widget.taskGroup.color,
             onPressed: (){
               if(_formKey.currentState.validate()){
                 _formKey.currentState.save();

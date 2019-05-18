@@ -41,7 +41,7 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
   void initState() {
     _progressController = new AnimationController(duration: Duration(milliseconds: 300), vsync: this);
     // _progressTween = new Tween<double>(begin: 0, end: 300);
-    _proressIndicatorWidth = _getSize(380);
+    _proressIndicatorWidth = _getSize(370);
     _progressFraction = (widget.taskGroup.numTasksCompleted / widget.taskGroup.numTask);
     animateProgress();
     
@@ -106,6 +106,7 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
               //   tag: '_progress' + widget.taskGroup.idx.toString(),
               //   child: 
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Stack(
                       children: <Widget>[
@@ -114,7 +115,7 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
                       ],
                     ),
                     SizedBox(width: 7,),
-                    customText.TinyText(text: '${(_progressFraction * 100).toStringAsFixed(1)} %', textColor: widget.taskGroup.color,)
+                    customText.BodyText(text: '${(_progressFraction * 100).round()} %', textColor: widget.taskGroup.color,)
                   ],
                 ),
               // )
@@ -147,7 +148,9 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
         onPressed: (){
           Navigator.of(context).push(MaterialPageRoute(
             builder: (BuildContext context) => AddTask(widget.taskGroup)
-          ));
+          )).then((_){
+            animateProgress();
+          });
         },
         backgroundColor: widget.taskGroup.color,
       ),
@@ -174,7 +177,7 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
         color: Colors.black54,
         decoration: TextDecoration.lineThrough,
       ) : TextStyle(),),
-      trailing: customText.TinyText(text: isToday(task.dateTime) ? "Today" : "${months[task.dateTime.month]} ${task.dateTime.day}", textColor: Colors.black,),
+      trailing: customText.BodyText(text: isToday(task.dateTime) ? "Today" : "${months[task.dateTime.month]} ${task.dateTime.day}", textColor: Colors.black87,),
       onTap: (){
 
       },
