@@ -197,38 +197,56 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
     );
   }
 
-  ListTile buildOldTask(Task task) {
-    return ListTile(
-      // key: UniqueKey(),
-      contentPadding: EdgeInsets.only(left: 0),
-      leading: Checkbox(
-        value: task.done,
-        activeColor: widget.taskGroup.color,
+  Widget buildOldTask(Task task) {
+    return Dismissible(
+      key: UniqueKey(),
+      background: Container(
+        alignment: Alignment.centerLeft,
+        padding: EdgeInsets.only(left: 10),
+        color: widget.taskGroup.color,
+        child: Icon(Icons.add, color: Colors.white, size: 30,),
       ),
-      title: Text(task.info, style: task.done ? TextStyle(
-        color: Colors.black54,
-        decoration: TextDecoration.lineThrough,
-      ) : TextStyle(),),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          IconButton(
-            icon: Icon(Icons.delete_forever),
-            onPressed: (){
-
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.add, color: widget.taskGroup.color,),
-            onPressed: (){
-
-            },
-          ),
-        ],
+      secondaryBackground: Container(
+        alignment: Alignment.centerRight,
+        padding: EdgeInsets.only(right: 10),
+        color: Colors.grey,
+        child: Icon(Icons.delete_forever, color: Colors.white, size: 30,),
       ),
-      onTap: (){
+      onDismissed: (DismissDirection dir){
 
       },
+      child: ListTile(
+        // key: UniqueKey(),
+        contentPadding: EdgeInsets.only(left: 0),
+        leading: Checkbox(
+          value: task.done,
+          activeColor: widget.taskGroup.color,
+        ),
+        title: Text(task.info, style: task.done ? TextStyle(
+          color: Colors.black54,
+          decoration: TextDecoration.lineThrough,
+        ) : TextStyle(),),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            IconButton(
+              icon: Icon(Icons.delete_forever),
+              onPressed: (){
+
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.add, color: widget.taskGroup.color,),
+              onPressed: (){
+
+              },
+            ),
+          ],
+        ),
+        onTap: (){
+
+        },
+      ),
     );
   }
 
