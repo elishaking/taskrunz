@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 
 import '../scoped-models/main.dart';
 import '../models/task.dart';
@@ -68,8 +69,42 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
     return map;
   }
 
+  _displayHistory(BuildContext context){
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context){
+        List<String> dateKeys = _taskWithDates.keys.toList();
+        return Container(
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+          child: ListView(
+            children: List.generate(dateKeys.length, (int index) {
+              DateTime now = DateTime.now();
+              if(dateKeys[index] == "${now.month} ${now.day}") return Container();
+
+              List<Task> tasks = _taskWithDates[dateKeys[index]];
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  customText.TitleText(text: dateKeys[index], textColor: Colors.black87,),
+                  Column(
+                    children: List.generate(tasks.length, (int index){
+                      return buildOldTask(tasks[index]);
+                    }),
+                  ),
+                  SizedBox(height: 10,)
+                ],
+              );
+            }),
+          ),
+        );
+      }
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    Timer(Duration(seconds: 2), () => _displayHistory(context));
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -154,6 +189,41 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
         },
         backgroundColor: widget.taskGroup.color,
       ),
+    );
+  }
+
+  ListTile buildOldTask(Task task) {
+    return ListTile(
+      // key: UniqueKey(),
+      contentPadding: EdgeInsets.only(left: 0),
+      leading: Checkbox(
+        value: task.done,
+        activeColor: widget.taskGroup.color,
+      ),
+      title: Text(task.info, style: task.done ? TextStyle(
+        color: Colors.black54,
+        decoration: TextDecoration.lineThrough,
+      ) : TextStyle(),),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          IconButton(
+            icon: Icon(Icons.delete_forever),
+            onPressed: (){
+
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.add, color: widget.taskGroup.color,),
+            onPressed: (){
+
+            },
+          ),
+        ],
+      ),
+      onTap: (){
+
+      },
     );
   }
 
