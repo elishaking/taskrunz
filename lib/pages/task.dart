@@ -62,7 +62,7 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
     DateTime currentDate = tasks[0].dateTime;
     for(int i = 0; i < tasks.length; ){
       if(isDay(tasks[i].dateTime, currentDate.day, currentDate.month)){
-        if(map["${currentDate.month} ${currentDate.day}"] == null) map["${currentDate.month} ${currentDate.day}"] = List<Task>();
+        if(map["${months[currentDate.month]} ${currentDate.day}"] == null) map["${months[currentDate.month]} ${currentDate.day}"] = List<Task>();
         map["${currentDate.month} ${currentDate.day}"].add(tasks[i]);
         i++;
       } else{
@@ -82,7 +82,7 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
           child: ListView(
             children: List.generate(dateKeys.length, (int index) {
               DateTime now = DateTime.now();
-              if(dateKeys[index] == "${now.month} ${now.day}") return Container();
+              if(dateKeys[index] == "${months[now.month]} ${now.day}") return Container();
 
               List<Task> tasks = _taskWithDates[dateKeys[index]];
               return Column(
@@ -111,6 +111,8 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
       _showHistorySheet = true;
     }
 
+    DateTime _date = DateTime.now();
+    String _today = "${months[_date.month]} ${_date.day}";
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -166,7 +168,9 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
             Container(
               // padding: const EdgeInsets.all(8.0),
               height: MediaQuery.of(context).size.height - 300,
-              child: ReorderableListView(
+              child: _taskWithDates[_today] == null ? Center(
+                child: Icon(Icons.no_sim, size: _getSize(250), color: widget.taskGroup.color.withOpacity(0.3),),
+              ) : ReorderableListView(
                 children: List.generate(widget.taskGroup.tasks.length, (int index){
                   return buildTask(widget.taskGroup.tasks[index]);
                 }),

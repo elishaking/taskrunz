@@ -185,7 +185,7 @@ class _HomePageState extends State<HomePage> {
     } else if(model.taskGroups.length == 0) {
       return Expanded(
         child: Center(
-          child: Icon(Icons.not_listed_location, size: 100, color: Colors.white,),
+          child: Icon(Icons.no_sim, size: _getSize(200), color: Colors.white.withOpacity(0.3),),
         ),
       );
     } else {
