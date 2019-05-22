@@ -78,7 +78,7 @@ class _NewTaskGroupPageState extends State<NewTaskGroupPage> {
                     TextFormField(
                       decoration: InputDecoration(
                         labelText: "Task Group",
-
+                        hintText: "e.g. Work, Home, Personal"
                       ),
                       validator: (String value){
                         if(value.isEmpty) return 'Enter a new Task Group';

@@ -6,8 +6,10 @@ import '../models/task.dart';
 
 class AddTask extends StatefulWidget{
   final TaskGroup taskGroup;
+  final Map<String, List<Task>> taskWithDates;
+  final String today;
 
-  AddTask(this.taskGroup);
+  AddTask(this.taskGroup, this.taskWithDates, this.today);
 
   @override
   _AddTaskState createState() => _AddTaskState();
@@ -62,12 +64,20 @@ class _AddTaskState extends State<AddTask> {
             onPressed: (){
               if(_formKey.currentState.validate()){
                 _formKey.currentState.save();
-                model.addTask(Task(
+
+                Task newTask = Task(
                   id: widget.taskGroup.tasks.length,
                   info: _text,
                   dateTime: DateTime.now(),
                   done: false
-                ), widget.taskGroup).then((_){
+                );
+
+                if(widget.taskWithDates[widget.today] == null){
+                  widget.taskWithDates[widget.today] = List<Task>();
+                }
+                widget.taskWithDates[widget.today].add(newTask);
+                
+                model.addTask(newTask, widget.taskGroup).then((_){
                   Navigator.of(context).pop();
                 });
               }

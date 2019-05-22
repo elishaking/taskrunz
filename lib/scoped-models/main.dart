@@ -92,13 +92,13 @@ class TaskModel extends ConnectedModel{
     toggleLoading(true);
 
     SharedPreferences pref = await SharedPreferences.getInstance();
-    // pref.clear();
+    pref.clear();
     String d = pref.getString('taskGroups');
     if(d != null){
       List data = json.decode(d);
       data.forEach((item) {
         _taskGroups.add(TaskGroup.fromMap(item));
-      });
+      }); 
     }
     toggleLoading(false);
   }

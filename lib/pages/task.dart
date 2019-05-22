@@ -27,6 +27,7 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
   }
 
   Map<String, List<Task>> _taskWithDates = Map();
+  String _today;
 
   final List<String> months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug',
   'Sep', 'Oct', 'Nov', 'Dec'];
@@ -104,6 +105,11 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
     );
   }
 
+  _updateDateString(){
+    DateTime _date = DateTime.now();
+    _today = "${months[_date.month]} ${_date.day}";
+  }
+
   @override
   Widget build(BuildContext context) {
     if(!_showHistorySheet && _taskWithDates.length > 0){
@@ -111,8 +117,8 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
       _showHistorySheet = true;
     }
 
-    DateTime _date = DateTime.now();
-    String _today = "${months[_date.month]} ${_date.day}";
+    _updateDateString();
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -177,8 +183,9 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
                   ],
                 )
               ) : ReorderableListView(
-                children: List.generate(widget.taskGroup.tasks.length, (int index){
-                  return buildTask(widget.taskGroup.tasks[index]);
+                children: List.generate(_taskWithDates[_today].length, (int index){
+                  print(_taskWithDates[_today][index]);
+                  return buildTask(_taskWithDates[_today][index]);
                 }),
                 onReorder: (int prevPos, int newPos){
                   print("$prevPos $newPos");
@@ -198,7 +205,7 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
         child: Icon(Icons.add),
         onPressed: (){
           Navigator.of(context).push(MaterialPageRoute(
-            builder: (BuildContext context) => AddTask(widget.taskGroup)
+            builder: (BuildContext context) => AddTask(widget.taskGroup, _taskWithDates, _today)
           )).then((_){
             animateProgress();
           });
