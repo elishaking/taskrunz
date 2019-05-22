@@ -36,7 +36,7 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
   Animation<double> _progressAnimation;
   double _progress = 0;
   double _proressIndicatorWidth;
-  double _progressFraction;
+  double _progressFraction = 0;
 
   bool _showHistorySheet = false;
 
@@ -45,7 +45,8 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
     _progressController = new AnimationController(duration: Duration(milliseconds: 300), vsync: this);
     // _progressTween = new Tween<double>(begin: 0, end: 300);
     _proressIndicatorWidth = _getSize(370);
-    _progressFraction = (widget.taskGroup.numTasksCompleted / widget.taskGroup.numTask);
+    if(widget.taskGroup.numTask != 0)
+      _progressFraction = (widget.taskGroup.numTasksCompleted / widget.taskGroup.numTask);
     animateProgress();
     
     _taskWithDates = _createListWithDates();
@@ -297,7 +298,8 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
 
   void animateProgress() {
     final double currentProgress = _progress;
-    _progressFraction = (widget.taskGroup.numTasksCompleted / widget.taskGroup.numTask);
+    if(widget.taskGroup.numTask != 0)
+      _progressFraction = (widget.taskGroup.numTasksCompleted / widget.taskGroup.numTask);
     _progress = widget.taskGroup.numTasksCompleted == 0 ? 0 : (_progressFraction * _proressIndicatorWidth).roundToDouble();
     
     _progressTween = new Tween<double>(begin: currentProgress, end: _progress);
