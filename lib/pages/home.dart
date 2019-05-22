@@ -185,7 +185,13 @@ class _HomePageState extends State<HomePage> {
     } else if(model.taskGroups.length == 0) {
       return Expanded(
         child: Center(
-          child: Icon(Icons.no_sim, size: _getSize(200), color: Colors.white.withOpacity(0.3),),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Icon(Icons.no_sim, size: _getSize(200), color: Colors.white.withOpacity(0.3),),
+              customText.BodyText(text: "No Tasks Yet", fontWeight: FontWeight.w700,)
+            ],
+          )
         ),
       );
     } else {

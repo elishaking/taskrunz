@@ -169,7 +169,13 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
               // padding: const EdgeInsets.all(8.0),
               height: MediaQuery.of(context).size.height - 300,
               child: _taskWithDates[_today] == null ? Center(
-                child: Icon(Icons.no_sim, size: _getSize(250), color: widget.taskGroup.color.withOpacity(0.3),),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Icon(Icons.no_sim, size: _getSize(250), color: widget.taskGroup.color.withOpacity(0.3),),
+                    customText.BodyText(text: "No Tasks Yet", fontWeight: FontWeight.w700, textColor: widget.taskGroup.color,)
+                  ],
+                )
               ) : ReorderableListView(
                 children: List.generate(widget.taskGroup.tasks.length, (int index){
                   return buildTask(widget.taskGroup.tasks[index]);
