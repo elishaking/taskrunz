@@ -8,14 +8,14 @@ import './pages/home.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-  MainModel _model = MainModel();
+  final MainModel _model = MainModel();
 
   @override
   Widget build(BuildContext context) {
     return ScopedModel<MainModel>(
       model: _model,
       child: MaterialApp(
-        title: 'Goalzz',
+        title: 'TaskRunz',
         theme: ThemeData(
           // This is the theme of your application.
           //
