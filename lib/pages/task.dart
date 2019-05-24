@@ -6,6 +6,8 @@ import '../models/task.dart';
 
 import '../widgets/custom_text.dart' as customText;
 
+import './task_history.dart';
+
 import './add_task.dart';
 
 class TaskPage extends StatefulWidget{
@@ -112,10 +114,10 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
-    if(!_showHistorySheet && _taskWithDates.length > 0){
-      Timer(Duration(seconds: 2), () => _displayHistory(context));
-      _showHistorySheet = true;
-    }
+    // if(!_showHistorySheet && _taskWithDates.length > 0){
+    //   Timer(Duration(seconds: 2), () => _displayHistory(context));
+    //   _showHistorySheet = true;
+    // }
 
     _updateDateString();
 
@@ -127,6 +129,16 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
         iconTheme: IconThemeData(
           color: widget.taskGroup.color
         ),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.list),
+            onPressed: (){
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (BuildContext context) => TaskHistoryPage(widget.taskGroup, _taskWithDates)
+              ));
+            },
+          )
+        ],
         // leading: IconButton(
         //   icon: Icon(Icons.arrow_back_ios, color: widget.taskGroup.color,),
         //   onPressed: (){
