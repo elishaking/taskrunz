@@ -74,7 +74,7 @@ class TaskModel extends ConnectedModel{
   Future addTask(Task task, TaskGroup taskGroup) async{
     toggleLoading(true);
 
-    taskGroup.tasks.insert(0, task);
+    taskGroup.tasks.add(task);
     taskGroup.numTask++;
     taskGroup.progressPercent = (taskGroup.numTask / taskGroup.numTasksCompleted) * 100;
 
@@ -86,6 +86,20 @@ class TaskModel extends ConnectedModel{
   Future saveTasks() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     pref.setString('taskGroups', json.encode(_taskGroups.map((TaskGroup taskGroup) => taskGroup.toMap()).toList()));
+  }
+
+  Future deleteTask(TaskGroup taskGroup, int index) async{
+    toggleLoading(true);
+
+    if(taskGroup.tasks[index].done)
+      taskGroup.numTasksCompleted--;
+    taskGroup.tasks.removeAt(index);
+    taskGroup.numTask--;
+    taskGroup.progressPercent = taskGroup.numTasksCompleted == 0 ? 0 : (taskGroup.numTask / taskGroup.numTasksCompleted) * 100;
+
+    await saveTasks();
+
+    toggleLoading(false);
   }
 
   Future fetchTasks() async{

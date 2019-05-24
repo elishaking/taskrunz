@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:scoped_model/scoped_model.dart';
 // import 'dart:async';
 
 import '../scoped-models/main.dart';
@@ -6,13 +7,14 @@ import '../models/task.dart';
 
 import '../widgets/custom_text.dart' as customText;
 
-import './task_history.dart';
+import '../utils/responsive.dart';
 
+import './task_history.dart';
 import './add_task.dart';
 
 class TaskPage extends StatefulWidget{
   final TaskGroup taskGroup;
-  final deviceWidth;
+  final double deviceWidth;
   final MainModel model;
 
   TaskPage(this.taskGroup, this.deviceWidth, this.model);
@@ -24,10 +26,6 @@ class TaskPage extends StatefulWidget{
 }
 
 class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin{
-  double _getSize(final double default_1440){
-    return (default_1440 / 14) * (0.0027 * widget.deviceWidth + 10.136);
-  }
-
   Map<String, List<Task>> _taskWithDates = Map();
   String _today;
 
@@ -41,19 +39,19 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
   double _proressIndicatorWidth;
   double _progressFraction = 0;
 
-  bool _showHistorySheet = false;
+  // bool _showHistorySheet = false;
 
   @override
   void initState() {
     _progressController = new AnimationController(duration: Duration(milliseconds: 300), vsync: this);
     // _progressTween = new Tween<double>(begin: 0, end: 300);
-    _proressIndicatorWidth = _getSize(370);
+    _proressIndicatorWidth = widget.deviceWidth - 90;
     if(widget.taskGroup.numTask != 0)
       _progressFraction = (widget.taskGroup.numTasksCompleted / widget.taskGroup.numTask);
     animateProgress();
     
     _taskWithDates = _createListWithDates();
-    print(_taskWithDates);
+    // print(_taskWithDates);
     super.initState();
   }
 
@@ -191,18 +189,22 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    Icon(Icons.no_sim, size: _getSize(250), color: widget.taskGroup.color.withOpacity(0.3),),
+                    Icon(Icons.no_sim, size: getSize(context, 250), color: widget.taskGroup.color.withOpacity(0.3),),
                     customText.BodyText(text: "No Tasks Yet", fontWeight: FontWeight.w700, textColor: widget.taskGroup.color,)
                   ],
                 )
               ) : ListView( //ReorderableListView
                 children: List.generate(_taskWithDates[_today].length, (int index){
-                  print(_taskWithDates[_today][index]);
-                  return Column(
-                    children: <Widget>[
-                      buildTask(_taskWithDates[_today][index]),
-                      Divider()
-                    ],
+                  // print(_taskWithDates[_today][index]);
+                  return ScopedModelDescendant<MainModel>(
+                    builder: (BuildContext context, Widget child, MainModel model){
+                      return Column(
+                        children: <Widget>[
+                          buildTask(_taskWithDates[_today][index], model, index),
+                          Divider()
+                        ],
+                      );
+                    },
                   );
                 }),
                 // onReorder: (int prevPos, int newPos){
@@ -287,7 +289,8 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
     );
   }
 */
-  Widget buildTask(Task task) {
+  Widget buildTask(Task task, MainModel model, int index) {
+    print(widget.taskGroup.tasks.map((Task task) => task.done).toList());
     return Dismissible(
       key: UniqueKey(),
       direction: DismissDirection.endToStart,
@@ -298,7 +301,11 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
         child: Icon(Icons.delete_forever, color: Colors.white, size: 30,),
       ),
       onDismissed: (DismissDirection dir){
-
+        print(widget.taskGroup.tasks.map((Task task) => task.done).toList());
+        model.deleteTask(widget.taskGroup, index).then((_){
+          _taskWithDates[_today].removeAt(index);
+          animateProgress();
+        });
       },
       child: ListTile(
         contentPadding: EdgeInsets.only(left: 0),
