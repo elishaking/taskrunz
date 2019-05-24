@@ -4,6 +4,8 @@ import '../models/task.dart';
 
 import '../widgets/custom_text.dart' as customText;
 
+import '../utils/responsive.dart';
+
 class TaskHistoryPage extends StatefulWidget{
   final TaskGroup taskGroup;
   final Map<String, List<Task>> taskWithDates;
@@ -34,7 +36,7 @@ class _TaskHistoryPageState extends State<TaskHistoryPage> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Icon(Icons.no_sim, size: 200, color: widget.taskGroup.color.withOpacity(0.3),),
+            Icon(Icons.no_sim, size: getSize(context, 200), color: widget.taskGroup.color.withOpacity(0.3),),
             customText.BodyText(text: "No Old Tasks Yet", textColor: widget.taskGroup.color,
             fontWeight: FontWeight.w900,)
           ],

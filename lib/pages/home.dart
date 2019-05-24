@@ -7,6 +7,8 @@ import '../models/task.dart';
 
 import '../widgets/custom_text.dart' as customText;
 
+import '../utils/responsive.dart';
+
 import './task.dart';
 import './new_task_group.dart';
 
@@ -62,14 +64,8 @@ class _HomePageState extends State<HomePage> {
     super.initState();
   }
 
-  double _targetWidth = 0;
-
-  double _getSize(final double default_1440){
-    return (default_1440 / 14) * (0.0027 * _targetWidth + 10.136);
-  }
-
   Widget _buildTaskGroup(BuildContext context, TaskGroup taskGroup){
-    final double proressIndicatorWidth = _getSize(230);
+    final double proressIndicatorWidth = getSize(context, 230);
     final double progress = taskGroup.numTasksCompleted == 0 ? 0 : ((taskGroup.numTasksCompleted / taskGroup.numTask) * proressIndicatorWidth).roundToDouble();
     return GestureDetector(
       onTap: (){
@@ -78,8 +74,8 @@ class _HomePageState extends State<HomePage> {
         ));
       },
       child: Container(
-        width: _getSize(350),
-        height: _getSize(400),
+        width: getSize(context, 350),
+        height: getSize(context, 400),
         child: Card(
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
@@ -96,7 +92,7 @@ class _HomePageState extends State<HomePage> {
                 customText.BodyText(text: '${taskGroup.numTask} Tasks', textColor: Colors.grey,),
                 SizedBox(height: 10,),
                 customText.TitleText(text: '${taskGroup.name}', textColor: Colors.black,),
-                SizedBox(height: _getSize(20),),
+                SizedBox(height: getSize(context, 20),),
                 // Hero(
                 //   tag: 'progress' + taskGroup.idx.toString(),
                 //     child: 
@@ -123,8 +119,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    _targetWidth = MediaQuery.of(context).size.width;
-
     DateTime _date = DateTime.now();
 
     return Scaffold(
@@ -141,13 +135,13 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            SizedBox(height: _getSize(20),),
+            SizedBox(height: getSize(context, 20),),
             CircleAvatar(
               // backgroundColor: Colors.white,
               radius: 40,
               backgroundImage: AssetImage('assets/passport.png'),
             ),
-            SizedBox(height: _getSize(30),),
+            SizedBox(height: getSize(context, 30),),
             customText.HeadlineText(
               text: 'Hello King',
             ),
@@ -193,7 +187,7 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              Icon(Icons.no_sim, size: _getSize(200), color: Colors.white.withOpacity(0.3),),
+              Icon(Icons.no_sim, size: getSize(context, 200), color: Colors.white.withOpacity(0.3),),
               customText.BodyText(text: "No Tasks Yet", fontWeight: FontWeight.w700,)
             ],
           )

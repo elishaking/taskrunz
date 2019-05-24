@@ -66,7 +66,7 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
     for(int i = 0; i < tasks.length; ){
       if(isDay(tasks[i].dateTime, currentDate.day, currentDate.month)){
         if(map["${months[currentDate.month]} ${currentDate.day}"] == null) map["${months[currentDate.month]} ${currentDate.day}"] = List<Task>();
-        map["${currentDate.month} ${currentDate.day}"].add(tasks[i]);
+        map["${months[currentDate.month]} ${currentDate.day}"].add(tasks[i]);
         i++;
       } else{
         currentDate = tasks[i].dateTime;
