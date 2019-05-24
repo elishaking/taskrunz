@@ -51,6 +51,9 @@ class _HomePageState extends State<HomePage> {
   //   ),
   // ];
 
+  final List<String> months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug',
+  'Sep', 'Oct', 'Nov', 'Dec'];
+
   @override
   initState(){
     widget.model.fetchTasks().then((_){
@@ -90,7 +93,7 @@ class _HomePageState extends State<HomePage> {
                   Icon(taskGroup.icon, color: taskGroup.color,),
                 // ),
                 Expanded(child: Container(),),
-                customText.TinyText(text: '${taskGroup.numTask} Tasks', textColor: Colors.grey,),
+                customText.BodyText(text: '${taskGroup.numTask} Tasks', textColor: Colors.grey,),
                 SizedBox(height: 10,),
                 customText.TitleText(text: '${taskGroup.name}', textColor: Colors.black,),
                 SizedBox(height: _getSize(20),),
@@ -122,6 +125,8 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     _targetWidth = MediaQuery.of(context).size.width;
 
+    DateTime _date = DateTime.now();
+
     return Scaffold(
       backgroundColor: Colors.orange.shade800,
       drawer: Drawer(),
@@ -150,10 +155,10 @@ class _HomePageState extends State<HomePage> {
             customText.BodyText(
               text: "Let's get cracking"
             ),
-            SizedBox(height: 5,),
-            customText.BodyText(text: "You have 3 tasks today"),
+            // SizedBox(height: 5,),
+            // customText.BodyText(text: "You have 3 tasks today"),
             SizedBox(height: 30,),
-            customText.BodyText(text: "TODAY, APRIL 10, 2018", fontWeight: FontWeight.bold,),
+            customText.BodyText(text: "${months[_date.month].toUpperCase()} ${_date.day}, ${_date.year}", fontWeight: FontWeight.bold,),
             SizedBox(height: 5,),
             SizedBox(height: 10),
             ScopedModelDescendant<MainModel>(
