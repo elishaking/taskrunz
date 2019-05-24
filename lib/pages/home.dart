@@ -74,13 +74,18 @@ class _HomePageState extends State<HomePage> {
         ));
       },
       child: Container(
-        width: getSize(context, 350),
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+        margin: EdgeInsets.only(right: 10),
+        width: getSize(context, 320),
         height: getSize(context, 400),
-        child: Card(
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-            margin: EdgeInsets.only(right: 5),
-            child: Column(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(15),
+          
+        ),
+        child: Stack(
+          children: <Widget>[
+            Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 // Hero(
@@ -120,7 +125,23 @@ class _HomePageState extends State<HomePage> {
                 // )
               ],
             ),
-          ),
+            Container(
+              alignment: Alignment.topRight,
+              child: Container(
+                width: getSize(context, 100),
+                height: getSize(context, 150),
+                decoration: BoxDecoration(
+                  color: taskGroup.color.withOpacity(0.1),
+                  borderRadius: BorderRadius.only(
+                    // topLeft: Radius.circular(15),
+                    topRight: Radius.circular(150),
+                    bottomLeft: Radius.circular(1000),
+                    // bottomRight: Radius.circular(15)
+                  )
+                ),
+              ),
+            )
+          ],
         ),
       ),
     );
