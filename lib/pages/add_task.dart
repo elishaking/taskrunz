@@ -39,6 +39,7 @@ class _AddTaskState extends State<AddTask> {
             child: Column(
               children: <Widget>[
                 TextFormField(
+                  autofocus: true,
                   decoration: InputDecoration(
                     labelText: "Task",
 

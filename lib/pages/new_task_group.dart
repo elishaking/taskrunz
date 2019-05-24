@@ -76,6 +76,7 @@ class _NewTaskGroupPageState extends State<NewTaskGroupPage> {
                 child: Column(
                   children: <Widget>[
                     TextFormField(
+                      autofocus: true,
                       decoration: InputDecoration(
                         labelText: "Task Group",
                         hintText: "e.g. Work, Home, Personal"
