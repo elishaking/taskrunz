@@ -290,7 +290,7 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
   }
 */
   Widget buildTask(Task task, MainModel model, int index) {
-    print(widget.taskGroup.tasks.map((Task task) => task.done).toList());
+    // print(widget.taskGroup.tasks.map((Task task) => task.done).toList());
     return Dismissible(
       key: UniqueKey(),
       direction: DismissDirection.endToStart,
@@ -301,7 +301,7 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
         child: Icon(Icons.delete_forever, color: Colors.white, size: 30,),
       ),
       onDismissed: (DismissDirection dir){
-        print(widget.taskGroup.tasks.map((Task task) => task.done).toList());
+        // print(widget.taskGroup.tasks.map((Task task) => task.done).toList());
         model.deleteTask(widget.taskGroup, index).then((_){
           _taskWithDates[_today].removeAt(index);
           animateProgress();

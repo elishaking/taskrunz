@@ -91,6 +91,15 @@ class _HomePageState extends State<HomePage> {
                 Expanded(child: Container(),),
                 customText.BodyText(text: '${taskGroup.numTask} Tasks', textColor: Colors.grey,),
                 SizedBox(height: 10,),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: taskGroup.color.withOpacity(0.7),
+                    borderRadius: BorderRadius.circular(13)
+                  ),
+                  child: customText.BodyText(text: '${taskGroup.numTasksCompleted} ${taskGroup.numTasksCompleted == 1 ? "Task" : "Tasks"} Completed', fontWeight: FontWeight.w900,),
+                ),
+                SizedBox(height: 10,),
                 customText.TitleText(text: '${taskGroup.name}', textColor: Colors.black,),
                 SizedBox(height: getSize(context, 20),),
                 // Hero(
@@ -105,7 +114,7 @@ class _HomePageState extends State<HomePage> {
                           Container(height: 3, width: progress, color: taskGroup.color,),
                         ],
                       ),
-                      customText.TinyText(text: '${progress.toStringAsFixed(1)} %', textColor: taskGroup.color,)
+                      customText.TinyText(text: '${taskGroup.progressPercent.toInt()} %', textColor: taskGroup.color,)
                     ],
                   ),
                 // )
