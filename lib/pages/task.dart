@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
+// import 'dart:async';
 
 import '../scoped-models/main.dart';
 import '../models/task.dart';
@@ -75,6 +75,7 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
     return map;
   }
 
+/*
   _displayHistory(BuildContext context){
     showModalBottomSheet(
       context: context,
@@ -106,7 +107,7 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
       }
     );
   }
-
+*/
   _updateDateString(){
     DateTime _date = DateTime.now();
     _today = "${months[_date.month]} ${_date.day}";
@@ -194,19 +195,24 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
                     customText.BodyText(text: "No Tasks Yet", fontWeight: FontWeight.w700, textColor: widget.taskGroup.color,)
                   ],
                 )
-              ) : ReorderableListView(
+              ) : ListView( //ReorderableListView
                 children: List.generate(_taskWithDates[_today].length, (int index){
                   print(_taskWithDates[_today][index]);
-                  return buildTask(_taskWithDates[_today][index]);
+                  return Column(
+                    children: <Widget>[
+                      buildTask(_taskWithDates[_today][index]),
+                      Divider()
+                    ],
+                  );
                 }),
-                onReorder: (int prevPos, int newPos){
-                  print("$prevPos $newPos");
-                  Task movedTask = widget.taskGroup.tasks[prevPos];
-                  setState(() {
-                   widget.taskGroup.tasks.removeAt(prevPos);
-                   widget.taskGroup.tasks.insert(newPos, movedTask); 
-                  });
-                },
+                // onReorder: (int prevPos, int newPos){
+                //   print("$prevPos $newPos");
+                //   Task movedTask = widget.taskGroup.tasks[prevPos];
+                //   setState(() {
+                //    widget.taskGroup.tasks.removeAt(prevPos);
+                //    widget.taskGroup.tasks.insert(newPos, movedTask); 
+                //   });
+                // },
               ),
             )
           ],
@@ -227,6 +233,7 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
     );
   }
 
+/*
   Widget buildOldTask(Task task) {
     return Dismissible(
       key: UniqueKey(),
@@ -279,7 +286,7 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
       ),
     );
   }
-
+*/
   Widget buildTask(Task task) {
     return Dismissible(
       key: UniqueKey(),
