@@ -76,7 +76,7 @@ class TaskModel extends ConnectedModel{
 
     taskGroup.tasks.add(task);
     taskGroup.numTask++;
-    taskGroup.progressPercent = (taskGroup.numTask / taskGroup.numTasksCompleted) * 100;
+    taskGroup.progressPercent = taskGroup.numTask == 0 ? 0 : (taskGroup.numTasksCompleted / taskGroup.numTask) * 100;
 
     await saveTasks();
 
@@ -95,7 +95,7 @@ class TaskModel extends ConnectedModel{
       taskGroup.numTasksCompleted--;
     taskGroup.tasks.removeAt(index);
     taskGroup.numTask--;
-    taskGroup.progressPercent = taskGroup.numTasksCompleted == 0 ? 0 : (taskGroup.numTask / taskGroup.numTasksCompleted) * 100;
+    taskGroup.progressPercent = taskGroup.numTask == 0 ? 0 : (taskGroup.numTasksCompleted / taskGroup.numTask) * 100;
 
     await saveTasks();
 

@@ -65,8 +65,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildTaskGroup(BuildContext context, TaskGroup taskGroup){
-    final double proressIndicatorWidth = getSize(context, 230);
-    final double progress = taskGroup.numTasksCompleted == 0 ? 0 : ((taskGroup.numTasksCompleted / taskGroup.numTask) * proressIndicatorWidth).roundToDouble();
+    final double proressIndicatorWidth = getSize(context, 220);
+    final double progress = taskGroup.numTask == 0 ? 0 : ((taskGroup.numTasksCompleted / taskGroup.numTask) * proressIndicatorWidth).roundToDouble();
     return GestureDetector(
       onTap: (){
         Navigator.of(context).push(MaterialPageRoute(

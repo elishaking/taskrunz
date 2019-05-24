@@ -317,6 +317,7 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
              task.done = value; 
             });
             value ? widget.taskGroup.numTasksCompleted++ : widget.taskGroup.numTasksCompleted--;
+            widget.taskGroup.progressPercent = (widget.taskGroup.numTasksCompleted / widget.taskGroup.numTask) * 100;
             animateProgress();
             widget.model.saveTasks();
           },
