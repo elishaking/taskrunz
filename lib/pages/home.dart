@@ -9,7 +9,7 @@ import '../widgets/custom_text.dart' as customText;
 
 import '../utils/responsive.dart';
 
-import './task.dart';
+import './tasks.dart';
 import './new_task_group.dart';
 
 class HomePage extends StatefulWidget{
@@ -70,7 +70,7 @@ class _HomePageState extends State<HomePage> {
     return GestureDetector(
       onTap: (){
         Navigator.of(context).push(MaterialPageRoute(
-          builder: (BuildContext context) => TaskPage(taskGroup, MediaQuery.of(context).size.width, widget.model)
+          builder: (BuildContext context) => TasksPage(taskGroup, MediaQuery.of(context).size.width, widget.model)
         ));
       },
       child: Container(
