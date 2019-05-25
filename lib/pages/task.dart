@@ -21,6 +21,14 @@ class TaskPage extends StatefulWidget{
 
 class _TaskPageState extends State<TaskPage> {
   Task task;
+  bool dueDateSet = false;
+  DateTime dueDate;
+  TimeOfDay dueTime;
+  DateTime remindDate;
+  TimeOfDay remindTime;
+
+  final List<String> months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug',
+  'Sep', 'Oct', 'Nov', 'Dec'];
 
   @override
   void initState() {
@@ -49,15 +57,15 @@ class _TaskPageState extends State<TaskPage> {
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(10),
-                      bottomRight: Radius.circular(10)
+                      bottomLeft: Radius.circular(20),
+                      bottomRight: Radius.circular(20)
                     ),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black12,
-                        offset: Offset(0, 1.7),
-                        spreadRadius: 0.3,
-                        // blurRadius: 1
+                        offset: Offset(0, 2),
+                        spreadRadius: 0.7,
+                        blurRadius: 1
                       ),
                     ]
                   ),
@@ -99,33 +107,67 @@ class _TaskPageState extends State<TaskPage> {
                 Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(20),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black12,
                         offset: Offset(0, 0),
-                        spreadRadius: 1.7,
-                        // blurRadius: 1
+                        spreadRadius: 1,
+                        blurRadius: 3
                       ),
                     ]
                   ),
                   child: Column(
                     children: <Widget>[
                       ListTile(
-                        leading: Icon(Icons.calendar_today),
-                        title: customText.BodyText(text: "Due Date", 
-                        textColor: Colors.grey,),
+                        leading: Icon(Icons.calendar_today, color: remindDate == null ? null : widget.taskGroup.color),
+                        title: remindDate == null ? Text("Due Date",) : Text("Due ${dueTime.hour}:${dueDate.minute}", style: TextStyle(color: widget.taskGroup.color)),
+                        subtitle: remindTime == null ? null : Text("${months[dueDate.month]} ${dueDate.day}"),
                         onTap: (){
-
+                          showDatePicker(
+                            context: context,
+                            firstDate: DateTime.now(),
+                            lastDate: DateTime.now().add(Duration(days: 360)),
+                            initialDate: DateTime.now().add(Duration(hours: 2))
+                          ).then((DateTime date){
+                            if(date != null){
+                              showTimePicker(
+                                context: context,
+                                initialTime: TimeOfDay.now().replacing(hour: TimeOfDay.now().hour + 3)
+                              ).then((TimeOfDay time){
+                                setState(() {
+                                 remindDate = date;
+                                 remindTime = time; 
+                                });
+                              });;
+                            }
+                          });
                         },
                       ),
                       Divider(),
                       ListTile(
-                        leading: Icon(Icons.alarm),
-                        title: customText.BodyText(text: "Remind  me", 
-                        textColor: Colors.grey,),
+                        leading: Icon(Icons.alarm, color: remindDate == null ? null : widget.taskGroup.color),
+                        title: remindDate == null ? Text("Remind Date",) : Text("Remind me at ${remindTime.hour}:${remindTime.minute}", style: TextStyle(color: widget.taskGroup.color)),
+                        subtitle: remindTime == null ? null : Text("${months[remindDate.month]} ${remindDate.day}"),
                         onTap: (){
-                          
+                          showDatePicker(
+                            context: context,
+                            firstDate: DateTime.now(),
+                            lastDate: DateTime.now().add(Duration(days: 360)),
+                            initialDate: DateTime.now().add(Duration(hours: 2))
+                          ).then((DateTime date){
+                            if(date != null){
+                              showTimePicker(
+                                context: context,
+                                initialTime: TimeOfDay.now().replacing(hour: TimeOfDay.now().hour + 3)
+                              ).then((TimeOfDay time){
+                                setState(() {
+                                 dueDate = date;
+                                 dueTime = time; 
+                                });
+                              });;
+                            }
+                          });
                         },
                       ),
                       Divider(),
@@ -134,7 +176,69 @@ class _TaskPageState extends State<TaskPage> {
                         title: customText.BodyText(text: "Repeat", 
                         textColor: Colors.grey,),
                         onTap: (){
-                          
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return Dialog(
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      customText.TitleText(text: "Repeat Every", textColor: widget.taskGroup.color,),
+                                      SizedBox(height: 20,),
+                                      Row(
+                                        // mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                        children: <Widget>[
+                                          Flexible(
+                                            flex: 1,
+                                            child: TextField(
+                                              keyboardType: TextInputType.number,
+                                              
+                                            ),
+                                          ),
+                                          SizedBox(width: 30,),
+                                          Flexible(
+                                            flex: 4,
+                                            child: DropdownButton(
+                                              items: [
+                                                DropdownMenuItem(child: Text("days"),),
+                                                DropdownMenuItem(child: Text("weeks"),),
+                                                DropdownMenuItem(child: Text("months"),),
+                                                DropdownMenuItem(child: Text("years"),),
+                                              ],
+                                              onChanged: (value){
+                                                print(value);
+                                              },
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                      ButtonTheme.bar(
+                                        child: ButtonBar(
+                                          children: <Widget>[
+                                            FlatButton(
+                                              child: Text("Cancel"),
+                                              onPressed: (){
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+                                            FlatButton(
+                                              child: Text("OK"),
+                                              textColor: widget.taskGroup.color,
+                                              onPressed: (){
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              );
+                            }
+                          );
                         },
                       ),
                       // Divider(),
