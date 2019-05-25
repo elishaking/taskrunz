@@ -19,6 +19,9 @@ class TaskPage extends StatefulWidget{
   _TaskPageState createState() => _TaskPageState();
 }
 
+
+String repeatOption = RepeatOptions.days;
+
 class _TaskPageState extends State<TaskPage> {
   Task task;
   bool dueDateSet = false;
@@ -176,69 +179,7 @@ class _TaskPageState extends State<TaskPage> {
                         title: customText.BodyText(text: "Repeat", 
                         textColor: Colors.grey,),
                         onTap: (){
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return Dialog(
-                                child: Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: <Widget>[
-                                      customText.TitleText(text: "Repeat Every", textColor: widget.taskGroup.color,),
-                                      SizedBox(height: 20,),
-                                      Row(
-                                        // mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                        children: <Widget>[
-                                          Flexible(
-                                            flex: 1,
-                                            child: TextField(
-                                              keyboardType: TextInputType.number,
-                                              
-                                            ),
-                                          ),
-                                          SizedBox(width: 30,),
-                                          Flexible(
-                                            flex: 4,
-                                            child: DropdownButton(
-                                              items: [
-                                                DropdownMenuItem(child: Text("days"),),
-                                                DropdownMenuItem(child: Text("weeks"),),
-                                                DropdownMenuItem(child: Text("months"),),
-                                                DropdownMenuItem(child: Text("years"),),
-                                              ],
-                                              onChanged: (value){
-                                                print(value);
-                                              },
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                      ButtonTheme.bar(
-                                        child: ButtonBar(
-                                          children: <Widget>[
-                                            FlatButton(
-                                              child: Text("Cancel"),
-                                              onPressed: (){
-                                                Navigator.of(context).pop();
-                                              },
-                                            ),
-                                            FlatButton(
-                                              child: Text("OK"),
-                                              textColor: widget.taskGroup.color,
-                                              onPressed: (){
-                                                Navigator.of(context).pop();
-                                              },
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              );
-                            }
-                          );
+                          _showRepeatOptionsDialog(context);
                         },
                       ),
                       // Divider(),
@@ -252,4 +193,89 @@ class _TaskPageState extends State<TaskPage> {
       ),
     );
   }
+
+  Future _showRepeatOptionsDialog(BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                customText.TitleText(text: "Repeat Every", textColor: widget.taskGroup.color,),
+                SizedBox(height: 20,),
+                RepeatOptionsMenu(),
+                SizedBox(height: 20,),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    FlatButton(
+                      child: Text("Cancel"),
+                      onPressed: (){
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    FlatButton(
+                      child: Text("OK"),
+                      textColor: widget.taskGroup.color,
+                      onPressed: (){
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                ),
+                
+              ],
+            ),
+          ),
+        );
+      }
+    );
+  }
+}
+
+class RepeatOptionsMenu extends StatefulWidget {
+  @override
+  _RepeatOptionsMenuState createState() => _RepeatOptionsMenuState();
+}
+
+class _RepeatOptionsMenuState extends State<RepeatOptionsMenu> {
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      // mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: <Widget>[
+        Flexible(
+          flex: 1,
+          child: TextField(
+            keyboardType: TextInputType.number,
+            
+          ),
+        ),
+        SizedBox(width: 30,),
+        Flexible(
+          flex: 4,
+          child: DropdownButton<String>(
+            value: repeatOption,
+            items: [RepeatOptions.days, RepeatOptions.months, RepeatOptions.weeks, RepeatOptions.years].map((String option) => DropdownMenuItem(child: Text(option), value: option,)).toList(),
+            onChanged: (String value){
+              print(value);
+              setState(() {
+                repeatOption = value; 
+              });
+            },
+          ),
+        )
+      ],
+    );
+  }
+}
+
+class RepeatOptions{
+  static final String days = "days";
+  static final String weeks = "weeks";
+  static final String months = "months";
+  static final String years = "years";
 }
