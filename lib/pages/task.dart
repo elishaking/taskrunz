@@ -8,6 +8,8 @@ import '../models/task.dart';
 
 import '../widgets/custom_text.dart' as customText;
 
+import '../utils/responsive.dart';
+
 class TaskPage extends StatefulWidget{
   final TaskGroup taskGroup;
   final int taskIndex;
@@ -21,10 +23,11 @@ class TaskPage extends StatefulWidget{
 
 
 String repeatOption = RepeatOptions.days;
+bool repeatDateSet = false;
+int repeatValue;
 
 class _TaskPageState extends State<TaskPage> {
   Task task;
-  bool dueDateSet = false;
   DateTime dueDate;
   TimeOfDay dueTime;
   DateTime remindDate;
@@ -175,11 +178,12 @@ class _TaskPageState extends State<TaskPage> {
                       ),
                       Divider(),
                       ListTile(
-                        leading: Icon(Icons.repeat),
-                        title: customText.BodyText(text: "Repeat", 
-                        textColor: Colors.grey,),
+                        leading: Icon(Icons.repeat, color: repeatValue == null ? null : widget.taskGroup.color,),
+                        title: _buildRepeatTitle(),
                         onTap: (){
-                          _showRepeatOptionsDialog(context);
+                          _showRepeatOptionsDialog(context).then((_){
+                            setState(() {});
+                          });
                         },
                       ),
                       // Divider(),
@@ -194,13 +198,30 @@ class _TaskPageState extends State<TaskPage> {
     );
   }
 
+  Text _buildRepeatTitle(){
+    if(repeatDateSet){
+      return Text(
+        repeatValue == 1 ? _singularRepeatText() : "Every $repeatValue $repeatOption", 
+        style: TextStyle(color: widget.taskGroup.color,)
+      );
+    }
+    return Text("Repeat");
+  }
+
+  String _singularRepeatText(){
+    if(repeatOption == RepeatOptions.days) return "Daily";
+    else if(repeatOption == RepeatOptions.weeks) return "Weekly";
+    else if(repeatOption == RepeatOptions.months) return "Monthly";
+    else return "Yearly";
+  }
+
   Future _showRepeatOptionsDialog(BuildContext context) {
     return showDialog(
       context: context,
       builder: (BuildContext context) {
         return Dialog(
           child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+            padding: EdgeInsets.symmetric(horizontal: getSize(context, 30), vertical: 10),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
@@ -221,6 +242,7 @@ class _TaskPageState extends State<TaskPage> {
                       child: Text("OK"),
                       textColor: widget.taskGroup.color,
                       onPressed: (){
+                        repeatDateSet = true;
                         Navigator.of(context).pop();
                       },
                     ),
@@ -250,8 +272,11 @@ class _RepeatOptionsMenuState extends State<RepeatOptionsMenu> {
         Flexible(
           flex: 1,
           child: TextField(
+            autofocus: true,
             keyboardType: TextInputType.number,
-            
+            onChanged: (String value){
+              repeatValue = int.parse(value);
+            },
           ),
         ),
         SizedBox(width: 30,),
@@ -261,7 +286,7 @@ class _RepeatOptionsMenuState extends State<RepeatOptionsMenu> {
             value: repeatOption,
             items: [RepeatOptions.days, RepeatOptions.months, RepeatOptions.weeks, RepeatOptions.years].map((String option) => DropdownMenuItem(child: Text(option), value: option,)).toList(),
             onChanged: (String value){
-              print(value);
+              // print(value);
               setState(() {
                 repeatOption = value; 
               });
