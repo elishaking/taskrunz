@@ -230,7 +230,7 @@ class _TaskPageState extends State<TaskPage> {
     await flutterLocalNotificationsPlugin.cancelAll();
     print(remindDate.toUtc().toIso8601String());
     await flutterLocalNotificationsPlugin.schedule(
-      DateTime.now().millisecondsSinceEpoch ~/ 1000000,
+      DateTime.now().millisecondsSinceEpoch.abs(),
       "Pending Task", 
       task.info, 
       remindDate, 

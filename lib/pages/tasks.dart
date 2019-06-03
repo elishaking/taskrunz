@@ -310,18 +310,23 @@ class _TasksPageState extends State<TasksPage> with SingleTickerProviderStateMix
       },
       child: ListTile(
         contentPadding: EdgeInsets.only(left: 0),
-        leading: Checkbox(
-          value: task.done,
-          activeColor: widget.taskGroup.color,
-          onChanged: (bool value){
-            setState(() {
-             task.done = value; 
-            });
-            value ? widget.taskGroup.numTasksCompleted++ : widget.taskGroup.numTasksCompleted--;
-            widget.taskGroup.progressPercent = (widget.taskGroup.numTasksCompleted / widget.taskGroup.numTask) * 100;
-            animateProgress();
-            widget.model.saveTasks();
-          },
+        leading: SizedBox(
+          height: 100,
+          child: FittedBox(
+            child: Checkbox(
+              value: task.done,
+              activeColor: widget.taskGroup.color,
+              onChanged: (bool value){
+                setState(() {
+                 task.done = value; 
+                });
+                value ? widget.taskGroup.numTasksCompleted++ : widget.taskGroup.numTasksCompleted--;
+                widget.taskGroup.progressPercent = (widget.taskGroup.numTasksCompleted / widget.taskGroup.numTask) * 100;
+                animateProgress();
+                widget.model.saveTasks();
+              },
+            ),
+          ),
         ),
         title: Text(task.info, style: task.done ? TextStyle(
           color: Colors.black54,
