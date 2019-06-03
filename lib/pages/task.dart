@@ -37,11 +37,24 @@ class _TaskPageState extends State<TaskPage> {
   final List<String> months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug',
   'Sep', 'Oct', 'Nov', 'Dec'];
 
-  
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
   @override
   void initState() {
     task = widget.taskGroup.tasks[widget.taskIndex];
+    flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+    flutterLocalNotificationsPlugin.initialize(
+      InitializationSettings(AndroidInitializationSettings('notification_icon'), IOSInitializationSettings()),
+      onSelectNotification: (String payLoad) async{
+        showDialog(
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+            title: Text("Reminder"),
+            content: Text("Notification"),
+          )
+        );
+      }
+    );
     super.initState();
   }
 
@@ -53,6 +66,9 @@ class _TaskPageState extends State<TaskPage> {
         title: customText.BodyText(text: '',),
         centerTitle: true,
         elevation: 0,
+        iconTheme: IconThemeData(
+          color: widget.taskGroup.color
+        ),
       ),
       body: Container(
         padding: EdgeInsets.symmetric(vertical: 15),
@@ -130,8 +146,8 @@ class _TaskPageState extends State<TaskPage> {
                     children: <Widget>[
                       ListTile(
                         leading: Icon(Icons.calendar_today, color: remindDate == null ? null : widget.taskGroup.color),
-                        title: remindDate == null ? Text("Due Date",) : Text("Due ${dueTime.hour}:${dueDate.minute}", style: TextStyle(color: widget.taskGroup.color)),
-                        subtitle: remindTime == null ? null : Text("${months[dueDate.month]} ${dueDate.day}"),
+                        title: dueDate == null ? Text("Due Date",) : Text("Due ${dueTime.hour}:${dueDate.minute}", style: TextStyle(color: widget.taskGroup.color)),
+                        subtitle: dueDate == null ? null : Text("${months[dueDate.month]} ${dueDate.day}"),
                         onTap: (){
                           showDatePicker(
                             context: context,
@@ -145,8 +161,8 @@ class _TaskPageState extends State<TaskPage> {
                                 initialTime: TimeOfDay.now().replacing(hour: TimeOfDay.now().hour + 3)
                               ).then((TimeOfDay time){
                                 setState(() {
-                                 remindDate = date;
-                                 remindTime = time; 
+                                 dueDate = date;
+                                 dueTime = time; 
                                 });
                               });;
                             }
@@ -170,10 +186,15 @@ class _TaskPageState extends State<TaskPage> {
                                 context: context,
                                 initialTime: TimeOfDay.now().replacing(hour: TimeOfDay.now().hour + 3)
                               ).then((TimeOfDay time){
-                                setState(() {
-                                 dueDate = date;
-                                 dueTime = time; 
-                                });
+                                if(time != null){
+                                  setState(() {
+                                    // remindDate = date;
+                                    remindTime = time; 
+                                    print("${date.year}-0${date.month}-${date.day}T${remindTime.hour}:${remindTime.minute}:30.799371Z");
+                                    remindDate = DateTime.parse("${date.year}-0${date.month}-${date.day}T0${remindTime.hour}:${remindTime.minute}:30.799371Z");
+                                  });
+                                  _setNotification();
+                                }
                               });;
                             }
                           });
@@ -200,6 +221,35 @@ class _TaskPageState extends State<TaskPage> {
       ),
     );
   }
+
+  void _setNotification() async{
+    AndroidNotificationDetails androidNotificationDetails = AndroidNotificationDetails('channelId', 'channelName', 'channelDescription');
+    IOSNotificationDetails iosNotificationDetails = IOSNotificationDetails();
+    NotificationDetails notificationDetails = NotificationDetails(androidNotificationDetails, iosNotificationDetails);
+    print(DateTime.now().millisecondsSinceEpoch ~/ 1000000);
+    await flutterLocalNotificationsPlugin.cancelAll();
+    print(remindDate.toUtc().toIso8601String());
+    await flutterLocalNotificationsPlugin.schedule(
+      DateTime.now().millisecondsSinceEpoch ~/ 1000000,
+      "Pending Task", 
+      task.info, 
+      remindDate, 
+      notificationDetails
+    ).then((_){
+      print("notification set");
+    });
+    // await flutterLocalNotificationsPlugin.periodicallyShow(
+    //   DateTime.now().millisecondsSinceEpoch,
+    //   "Pending Task", 
+    //   task.info, 
+    //   RepeatInterval.Daily, 
+    //   notificationDetails
+    // );
+  }
+
+  // RepeatInterval _getNotificationRepeattInterval(){
+  //   if(repeatOption == RepeatOptions.days)
+  // }
 
   Text _buildRepeatTitle(){
     if(repeatDateSet){
