@@ -45,15 +45,15 @@ class _TaskPageState extends State<TaskPage> {
     flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
     flutterLocalNotificationsPlugin.initialize(
       InitializationSettings(AndroidInitializationSettings('notification_icon'), IOSInitializationSettings()),
-      onSelectNotification: (String payLoad) async{
-        showDialog(
-          context: context,
-          builder: (BuildContext context) => AlertDialog(
-            title: Text("Reminder"),
-            content: Text("Notification"),
-          )
-        );
-      }
+      // onSelectNotification: (String payLoad) async{
+      //   showDialog(
+      //     context: context,
+      //     builder: (BuildContext context) => AlertDialog(
+      //       title: Text("Reminder"),
+      //       content: Text("Notification"),
+      //     )
+      //   );
+      // }
     );
     super.initState();
   }
@@ -190,8 +190,9 @@ class _TaskPageState extends State<TaskPage> {
                                   setState(() {
                                     // remindDate = date;
                                     remindTime = time; 
-                                    print("${date.year}-0${date.month}-${date.day}T${remindTime.hour}:${remindTime.minute}:30.799371Z");
-                                    remindDate = DateTime.parse("${date.year}-0${date.month}-${date.day}T0${remindTime.hour}:${remindTime.minute}:30.799371Z");
+                                    String dateString = "${date.year}-0${date.month}-0${date.day}T${remindTime.hour}:${remindTime.minute}:30.799371Z";
+                                    print(dateString);
+                                    remindDate = DateTime.parse(dateString);
                                   });
                                   _setNotification();
                                 }
@@ -228,9 +229,9 @@ class _TaskPageState extends State<TaskPage> {
     NotificationDetails notificationDetails = NotificationDetails(androidNotificationDetails, iosNotificationDetails);
     print(DateTime.now().millisecondsSinceEpoch ~/ 1000000);
     await flutterLocalNotificationsPlugin.cancelAll();
-    print(remindDate.toUtc().toIso8601String());
+    print(remindDate.toIso8601String());
     await flutterLocalNotificationsPlugin.schedule(
-      DateTime.now().millisecondsSinceEpoch.abs(),
+      0,
       "Pending Task", 
       task.info, 
       remindDate, 
