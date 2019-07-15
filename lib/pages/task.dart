@@ -61,15 +61,15 @@ class _TaskPageState extends State<TaskPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: customText.BodyText(text: '',),
-        centerTitle: true,
-        elevation: 0,
-        iconTheme: IconThemeData(
-          color: widget.taskGroup.color
-        ),
-      ),
+      // appBar: AppBar(
+      //   backgroundColor: Colors.white,
+      //   title: customText.BodyText(text: '',),
+      //   centerTitle: true,
+      //   elevation: 0,
+      //   iconTheme: IconThemeData(
+      //     color: widget.taskGroup.color
+      //   ),
+      // ),
       body: Container(
         padding: EdgeInsets.symmetric(vertical: 15),
         color: Colors.white,
@@ -77,142 +77,163 @@ class _TaskPageState extends State<TaskPage> {
           builder: (BuildContext context, Widget child, MainModel model){
             return Column(
               children: <Widget>[
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(20),
-                      bottomRight: Radius.circular(20)
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black12,
-                        offset: Offset(0, 2),
-                        spreadRadius: 0.7,
-                        blurRadius: 1
+                Card(
+                  margin: EdgeInsets.all(0),
+                  elevation: 2,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(20),
+                        bottomRight: Radius.circular(20)
                       ),
-                    ]
-                  ),
-                  child: Column(
-                    children: <Widget>[
-                      ListTile(
-                        contentPadding: EdgeInsets.all(0),
-                        leading: Checkbox(
-                          value: task.done,
-                          onChanged: (bool value){
-                            setState(() {
-                              task.done = value; 
-                            });
-                            value ? widget.taskGroup.numTasksCompleted++ : widget.taskGroup.numTasksCompleted--;
-                            widget.taskGroup.progressPercent = (widget.taskGroup.numTasksCompleted / widget.taskGroup.numTask) * 100;
-                            widget.model.saveTasks();
+                      // boxShadow: [
+                      //   BoxShadow(
+                      //     color: Colors.black12,
+                      //     offset: Offset(0, 2),
+                      //     spreadRadius: 0.7,
+                      //     blurRadius: 1
+                      //   ),
+                      // ]
+                    ),
+                    child: Column(
+                      children: <Widget>[
+                        Container(
+                          padding: EdgeInsets.symmetric(vertical: 15),
+                          child: Row(
+                            children: <Widget>[
+                              IconButton(
+                                icon: Icon(Icons.arrow_back, color: widget.taskGroup.color,),
+                                onPressed: (){
+                                  Navigator.of(context).pop();
+                                },
+                              )
+                            ],
+                          ),
+                        ),
+                        ListTile(
+                          contentPadding: EdgeInsets.all(0),
+                          leading: Checkbox(
+                            value: task.done,
+                            onChanged: (bool value){
+                              setState(() {
+                                task.done = value; 
+                              });
+                              value ? widget.taskGroup.numTasksCompleted++ : widget.taskGroup.numTasksCompleted--;
+                              widget.taskGroup.progressPercent = (widget.taskGroup.numTasksCompleted / widget.taskGroup.numTask) * 100;
+                              widget.model.saveTasks();
+                            },
+                          ),
+                          title: customText.HeadlineText(text: task.info, textColor: widget.taskGroup.color,),
+                        ),
+                        SizedBox(height: 5,),
+                        FlatButton(
+                          child: Row(
+                            children: <Widget>[
+                              Icon(Icons.add, color: widget.taskGroup.color,),
+                              SizedBox(width: 10,),
+                              customText.BodyText(text: "Add Step", textColor: widget.taskGroup.color,)
+                            ],
+                          ),
+                          onPressed: (){
+                            
                           },
                         ),
-                        title: customText.HeadlineText(text: task.info, textColor: widget.taskGroup.color,),
-                      ),
-                      SizedBox(height: 5,),
-                      FlatButton(
-                        child: Row(
-                          children: <Widget>[
-                            Icon(Icons.add, color: widget.taskGroup.color,),
-                            SizedBox(width: 10,),
-                            customText.BodyText(text: "Add Step", textColor: widget.taskGroup.color,)
-                          ],
-                        ),
-                        onPressed: (){
-                          
-                        },
-                      ),
-                      SizedBox(height: 10,),
-                    ],
+                        SizedBox(height: 10,),
+                      ],
+                    ),
                   ),
                 ),
                 SizedBox(height: 20,),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black12,
-                        offset: Offset(0, 0),
-                        spreadRadius: 1,
-                        blurRadius: 3
-                      ),
-                    ]
-                  ),
-                  child: Column(
-                    children: <Widget>[
-                      ListTile(
-                        leading: Icon(Icons.calendar_today, color: remindDate == null ? null : widget.taskGroup.color),
-                        title: dueDate == null ? Text("Due Date",) : Text("Due ${dueTime.hour}:${dueDate.minute}", style: TextStyle(color: widget.taskGroup.color)),
-                        subtitle: dueDate == null ? null : Text("${months[dueDate.month]} ${dueDate.day}"),
-                        onTap: (){
-                          showDatePicker(
-                            context: context,
-                            firstDate: DateTime.now(),
-                            lastDate: DateTime.now().add(Duration(days: 360)),
-                            initialDate: DateTime.now().add(Duration(hours: 2))
-                          ).then((DateTime date){
-                            if(date != null){
-                              showTimePicker(
-                                context: context,
-                                initialTime: TimeOfDay.now().replacing(hour: TimeOfDay.now().hour + 3)
-                              ).then((TimeOfDay time){
-                                setState(() {
-                                 dueDate = date;
-                                 dueTime = time; 
-                                });
-                              });;
-                            }
-                          });
-                        },
-                      ),
-                      Divider(),
-                      ListTile(
-                        leading: Icon(Icons.alarm, color: remindDate == null ? null : widget.taskGroup.color),
-                        title: remindDate == null ? Text("Remind Date",) : Text("Remind me at ${remindTime.hour}:${remindTime.minute}", style: TextStyle(color: widget.taskGroup.color)),
-                        subtitle: remindTime == null ? null : Text("${months[remindDate.month]} ${remindDate.day}"),
-                        onTap: (){
-                          showDatePicker(
-                            context: context,
-                            firstDate: DateTime.now(),
-                            lastDate: DateTime.now().add(Duration(days: 360)),
-                            initialDate: DateTime.now().add(Duration(hours: 2))
-                          ).then((DateTime date){
-                            if(date != null){
-                              showTimePicker(
-                                context: context,
-                                initialTime: TimeOfDay.now().replacing(hour: TimeOfDay.now().hour + 3)
-                              ).then((TimeOfDay time){
-                                if(time != null){
+                Card(
+                  elevation: 2,
+                  margin: EdgeInsets.all(0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      // boxShadow: [
+                      //   BoxShadow(
+                      //     color: Colors.black12,
+                      //     offset: Offset(0, 0),
+                      //     spreadRadius: 1,
+                      //     blurRadius: 3
+                      //   ),
+                      // ]
+                    ),
+                    child: Column(
+                      children: <Widget>[
+                        ListTile(
+                          leading: Icon(Icons.calendar_today, color: remindDate == null ? null : widget.taskGroup.color),
+                          title: dueDate == null ? Text("Due Date",) : Text("Due ${dueTime.hour}:${dueDate.minute}", style: TextStyle(color: widget.taskGroup.color)),
+                          subtitle: dueDate == null ? null : Text("${months[dueDate.month]} ${dueDate.day}"),
+                          onTap: (){
+                            showDatePicker(
+                              context: context,
+                              firstDate: DateTime.now(),
+                              lastDate: DateTime.now().add(Duration(days: 360)),
+                              initialDate: DateTime.now().add(Duration(hours: 2))
+                            ).then((DateTime date){
+                              if(date != null){
+                                showTimePicker(
+                                  context: context,
+                                  initialTime: TimeOfDay.now().replacing(hour: TimeOfDay.now().hour + 3)
+                                ).then((TimeOfDay time){
                                   setState(() {
-                                    // remindDate = date;
-                                    remindTime = time; 
-                                    String dateString = "${date.year}-0${date.month}-0${date.day}T${remindTime.hour}:${remindTime.minute}:30.799371Z";
-                                    print(dateString);
-                                    remindDate = DateTime.parse(dateString);
+                                   dueDate = date;
+                                   dueTime = time; 
                                   });
-                                  _setNotification();
-                                }
-                              });;
-                            }
-                          });
-                        },
-                      ),
-                      Divider(),
-                      ListTile(
-                        leading: Icon(Icons.repeat, color: repeatValue == null ? null : widget.taskGroup.color,),
-                        title: _buildRepeatTitle(),
-                        onTap: (){
-                          _showRepeatOptionsDialog(context).then((_){
-                            setState(() {});
-                          });
-                        },
-                      ),
-                      // Divider(),
-                    ],
+                                });;
+                              }
+                            });
+                          },
+                        ),
+                        Divider(),
+                        ListTile(
+                          leading: Icon(Icons.alarm, color: remindDate == null ? null : widget.taskGroup.color),
+                          title: remindDate == null ? Text("Remind Date",) : Text("Remind me at ${remindTime.hour}:${remindTime.minute}", style: TextStyle(color: widget.taskGroup.color)),
+                          subtitle: remindTime == null ? null : Text("${months[remindDate.month]} ${remindDate.day}"),
+                          onTap: (){
+                            showDatePicker(
+                              context: context,
+                              firstDate: DateTime.now(),
+                              lastDate: DateTime.now().add(Duration(days: 360)),
+                              initialDate: DateTime.now().add(Duration(hours: 2))
+                            ).then((DateTime date){
+                              if(date != null){
+                                showTimePicker(
+                                  context: context,
+                                  initialTime: TimeOfDay.now().replacing(hour: TimeOfDay.now().hour + 3)
+                                ).then((TimeOfDay time){
+                                  if(time != null){
+                                    setState(() {
+                                      // remindDate = date;
+                                      remindTime = time; 
+                                      String dateString = "${date.year}-0${date.month}-0${date.day}T${remindTime.hour}:${remindTime.minute}:30.799371Z";
+                                      print(dateString);
+                                      remindDate = DateTime.parse(dateString);
+                                    });
+                                    _setNotification();
+                                  }
+                                });;
+                              }
+                            });
+                          },
+                        ),
+                        Divider(),
+                        ListTile(
+                          leading: Icon(Icons.repeat, color: repeatValue == null ? null : widget.taskGroup.color,),
+                          title: _buildRepeatTitle(),
+                          onTap: (){
+                            _showRepeatOptionsDialog(context).then((_){
+                              setState(() {});
+                            });
+                          },
+                        ),
+                        // Divider(),
+                      ],
+                    ),
                   ),
                 ),
               ],
