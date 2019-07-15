@@ -43,8 +43,12 @@ class _TaskPageState extends State<TaskPage> {
   void initState() {
     task = widget.taskGroup.tasks[widget.taskIndex];
     flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-    flutterLocalNotificationsPlugin.initialize(
-      InitializationSettings(AndroidInitializationSettings('notification_icon'), IOSInitializationSettings()),
+    AndroidInitializationSettings androidInitializationSettings = AndroidInitializationSettings('@drawable/notification_icon');
+    IOSInitializationSettings iosInitializationSettings = IOSInitializationSettings();
+    InitializationSettings initializationSettings = InitializationSettings(androidInitializationSettings, iosInitializationSettings);
+    flutterLocalNotificationsPlugin.initialize(initializationSettings, onSelectNotification: (String payload){
+      print(payload);
+    });
       // onSelectNotification: (String payLoad) async{
       //   showDialog(
       //     context: context,
@@ -54,7 +58,6 @@ class _TaskPageState extends State<TaskPage> {
       //     )
       //   );
       // }
-    );
     super.initState();
   }
 
@@ -165,7 +168,7 @@ class _TaskPageState extends State<TaskPage> {
                     child: Column(
                       children: <Widget>[
                         ListTile(
-                          leading: Icon(Icons.calendar_today, color: remindDate == null ? null : widget.taskGroup.color),
+                          leading: Icon(Icons.calendar_today, color: dueDate == null ? null : widget.taskGroup.color),
                           title: dueDate == null ? Text("Due Date",) : Text("Due ${dueTime.hour}:${dueDate.minute}", style: TextStyle(color: widget.taskGroup.color)),
                           subtitle: dueDate == null ? null : Text("${months[dueDate.month]} ${dueDate.day}"),
                           onTap: (){
@@ -204,15 +207,17 @@ class _TaskPageState extends State<TaskPage> {
                               if(date != null){
                                 showTimePicker(
                                   context: context,
-                                  initialTime: TimeOfDay.now().replacing(hour: TimeOfDay.now().hour + 3)
+                                  initialTime: TimeOfDay.fromDateTime(DateTime.now().add(Duration(minutes: 1)))
                                 ).then((TimeOfDay time){
                                   if(time != null){
                                     setState(() {
-                                      // remindDate = date;
+                                      remindDate = date;
                                       remindTime = time; 
-                                      String dateString = "${date.year}-0${date.month}-0${date.day}T${remindTime.hour}:${remindTime.minute}:30.799371Z";
-                                      print(dateString);
-                                      remindDate = DateTime.parse(dateString);
+                                      // String dateString = "${date.year}-0${date.month}-0${date.day}T${remindTime.hour}:${remindTime.minute}:30.799371Z";
+                                      print(date.toIso8601String());
+                                      print(time.format(context));
+                                      remindDate = DateTime(date.year, date.month, date.day, date.hour, time.minute, date.second); // DateTime.parse(dateString);
+                                      print(remindDate.toIso8601String());
                                     });
                                     _setNotification();
                                   }
@@ -248,17 +253,26 @@ class _TaskPageState extends State<TaskPage> {
     AndroidNotificationDetails androidNotificationDetails = AndroidNotificationDetails('channelId', 'channelName', 'channelDescription');
     IOSNotificationDetails iosNotificationDetails = IOSNotificationDetails();
     NotificationDetails notificationDetails = NotificationDetails(androidNotificationDetails, iosNotificationDetails);
-    print(DateTime.now().millisecondsSinceEpoch ~/ 1000000);
+    // print(DateTime.now().millisecondsSinceEpoch ~/ 1000000);
     await flutterLocalNotificationsPlugin.cancelAll();
     print(remindDate.toIso8601String());
-    await flutterLocalNotificationsPlugin.schedule(
-      0,
+    List<PendingNotificationRequest> pendingNotificationRequest = await flutterLocalNotificationsPlugin.pendingNotificationRequests();
+
+    flutterLocalNotificationsPlugin.schedule(
+      pendingNotificationRequest == null ? 0 : pendingNotificationRequest.length,
       "Pending Task", 
       task.info, 
       remindDate, 
       notificationDetails
     ).then((_){
       print("notification set");
+    });
+
+    flutterLocalNotificationsPlugin.pendingNotificationRequests().then((List<PendingNotificationRequest> reqs){
+      print("Pending Notifications:");
+      reqs.forEach((PendingNotificationRequest req){
+        print("${req.id}\n${req.title}\n${req.body}\n");
+      });
     });
     // await flutterLocalNotificationsPlugin.periodicallyShow(
     //   DateTime.now().millisecondsSinceEpoch,
