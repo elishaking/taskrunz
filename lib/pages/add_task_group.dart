@@ -21,7 +21,12 @@ class _AddTaskGroupPageState extends State<AddTaskGroupPage> {
   List _colors = [
     Colors.orange,
     Colors.green,
-    Colors.purple
+    Colors.purple,
+    Colors.lightBlue,
+    Colors.blue,
+    Colors.blueAccent,
+    Colors.yellow,
+    Colors.amber
   ];
   int _selectedIdx = 0;
   List<bool> _selected = [];
