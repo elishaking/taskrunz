@@ -26,6 +26,7 @@ dependencies:
   scoped_model: any
   shared_preferences: any
   flutter_local_notifications: any
+  # image_picker: ^0.6.1+4
   # dropdownfield: ^0.0.2
 
   # The following adds the Cupertino Icons font to your application.

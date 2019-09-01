@@ -166,11 +166,12 @@ class _HomePageState extends State<HomePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             SizedBox(height: getSize(context, 20),),
-            CircleAvatar(
-              // backgroundColor: Colors.white,
-              radius: 40,
-              backgroundImage: AssetImage('assets/passport.png'),
-            ),
+            // CircleAvatar(
+            //   // backgroundColor: Colors.white,
+            //   radius: 40,
+            //   backgroundImage: AssetImage('assets/passport.png'),
+            // ),
+            Icon(Icons.schedule, size: 100, color: Colors.white,),
             SizedBox(height: getSize(context, 30),),
             customText.HeadlineText(
               text: 'Hello ${widget.model.name}',
