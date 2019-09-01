@@ -82,6 +82,16 @@ class TaskModel extends ConnectedModel{
     toggleLoading(false);
   }
 
+  Future addTaskStep(Task task, TaskStep taskStep) async{
+    toggleLoading(true);
+
+    task.taskSteps.add(taskStep);
+    
+    await saveTasks();
+
+    toggleLoading(false);
+  }
+
   Future saveTasks() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     pref.setString('taskGroups', json.encode(_taskGroups.map((TaskGroup taskGroup) => taskGroup.toMap()).toList()));

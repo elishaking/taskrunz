@@ -44,8 +44,9 @@ class Task{
   String info;
   DateTime dateTime;
   bool done;
+  List<TaskStep> taskSteps;
 
-  Task({this.id, this.info, this.dateTime, this.done});
+  Task({this.id, this.info, this.dateTime, this.done, this.taskSteps});
 
   // Task.fromMap(Map<String, dynamic> map) {
   //   id = map['_id'];
@@ -58,7 +59,8 @@ class Task{
     var taskMap = <String, dynamic>{
       'info': info,
       'date_time': dateTime.toIso8601String(),
-      'done': done
+      'done': done,
+      'taskSteps': taskSteps.map((TaskStep taskStep) => taskStep.toMap()).toList()
     };
     if (id != null) {
       taskMap['_id'] = id;
@@ -71,7 +73,8 @@ class Task{
       id: item['_id'],
       info: item['info'],
       dateTime: DateTime.parse(item['date_time']),
-      done: item['done']
+      done: item['done'],
+      taskSteps: item['taskSteps'].map((Map<String, dynamic> taskStep) => TaskStep.fromMap(taskStep)).toList()
     );
   }
 }
@@ -99,7 +102,7 @@ class TaskStep{
     return TaskStep(
       id: item['id'],
       info: item['info'],
-      done: item['done']
+      done: item['done'],
     );
   }
 }

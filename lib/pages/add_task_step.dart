@@ -56,21 +56,17 @@ class _AddTaskStepState extends State<AddTaskStep> {
       floatingActionButton: ScopedModelDescendant<MainModel>(
         builder: (BuildContext context, Widget child, MainModel model){
           return FloatingActionButton(
-            heroTag: 'add_task',
+            heroTag: 'add_task_step',
             child: Icon(Icons.add),
             backgroundColor: widget.taskGroup.color,
             onPressed: (){
               if(_formKey.currentState.validate()){
                 _formKey.currentState.save();
-
-                Task newTask = Task(
-                  id: widget.taskGroup.tasks.length,
-                  info: _text,
-                  dateTime: DateTime.now(),
-                  done: false
-                );
                 
-                model.addTask(newTask, widget.taskGroup).then((_){
+                model.addTaskStep(widget.taskGroup.tasks[widget.taskIndex], TaskStep(
+                  info: _text,
+                  done: false
+                )).then((_){
                   Navigator.of(context).pop();
                 });
               }
