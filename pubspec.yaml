@@ -72,18 +72,18 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-    - family: Poppins
+    - family: Nunito
       fonts:
-      - asset: assets/fonts/Poppins-Regular.ttf
-      - asset: assets/fonts/Poppins-ExtraLight.ttf
+      - asset: assets/fonts/Nunito-Regular.ttf
+      - asset: assets/fonts/Nunito-ExtraLight.ttf
         weight: 100
-      - asset: assets/fonts/Poppins-Light.ttf
+      - asset: assets/fonts/Nunito-Light.ttf
         weight: 300
-      - asset: assets/fonts/Poppins-SemiBold.ttf
+      - asset: assets/fonts/Nunito-SemiBold.ttf
         weight: 500
-      - asset: assets/fonts/Poppins-Bold.ttf
+      - asset: assets/fonts/Nunito-Bold.ttf
         weight: 700
-      - asset: assets/fonts/Poppins-Black.ttf
+      - asset: assets/fonts/Nunito-Black.ttf
         weight: 900
   #
   # For details regarding fonts from package dependencies,
