@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:taskrunz/pages/add_task_step.dart';
 
 import '../scoped-models/main.dart';
 
@@ -81,8 +82,8 @@ class _TaskPageState extends State<TaskPage> {
             return Column(
               children: <Widget>[
                 _buildTaskHeading(context),
-                SizedBox(height: 20,),
-                _buildTaskActions(context),
+                // SizedBox(height: 20,),
+                // _buildTaskActions(context),
               ],
             );
           },
@@ -152,7 +153,9 @@ class _TaskPageState extends State<TaskPage> {
                 ],
               ),
               onPressed: (){
-                
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) => AddTaskStep(widget.taskGroup)
+                ));
               },
             ),
             SizedBox(height: 10,),

@@ -25,7 +25,7 @@ class _AddTaskState extends State<AddTask> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: Text('New Task', style: TextStyle(color: widget.taskGroup.color),),
+        // title: Text('New Task', style: TextStyle(color: widget.taskGroup.color),),
         centerTitle: true,
         iconTheme: IconThemeData(
           color: widget.taskGroup.color
