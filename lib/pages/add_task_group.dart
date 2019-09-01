@@ -25,8 +25,9 @@ class _AddTaskGroupPageState extends State<AddTaskGroupPage> {
     Colors.lightBlue,
     Colors.blue,
     Colors.blueAccent,
-    Colors.yellow,
-    Colors.amber
+    // Colors.yellow,
+    Colors.deepOrangeAccent,
+    Colors.black
   ];
   int _selectedIdx = 0;
   List<bool> _selected = [];
@@ -82,6 +83,7 @@ class _AddTaskGroupPageState extends State<AddTaskGroupPage> {
                   children: <Widget>[
                     TextFormField(
                       autofocus: true,
+
                       decoration: InputDecoration(
                         labelText: "Task Group",
                         hintText: "e.g. Work, Home, Personal"
@@ -103,6 +105,7 @@ class _AddTaskGroupPageState extends State<AddTaskGroupPage> {
                 shrinkWrap: true,
                 crossAxisCount: 5,
                 crossAxisSpacing: 20,
+                mainAxisSpacing: 20,
                 children: List.generate(_colors.length, (int index) => GestureDetector(
                   onTap: (){
                     if(index == _selectedIdx) return;
@@ -151,6 +154,7 @@ class _AddTaskGroupPageState extends State<AddTaskGroupPage> {
                 shrinkWrap: true,
                 crossAxisCount: 5,
                 crossAxisSpacing: 20,
+                mainAxisSpacing: 20,
                 children: List.generate(_colors.length, (int index) => GestureDetector(
                   onTap: (){
                     if(index == _selectedIconIdx) return;
