@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
           // is not restarted.
           primaryColor: Colors.blue,
           // accentColor: Colors.orange,
-          fontFamily: 'Nunito'
+          fontFamily: 'Poppins'
         ),
         home: HomePage(_model),
       ),

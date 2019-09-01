@@ -19,7 +19,7 @@ class HeadlineText extends StatelessWidget{
 
     return Text(text,
       style: Theme.of(context).textTheme.headline.merge(TextStyle(
-        // fontFamily: 'Montserrat',
+        // fontFamily: 'Poppins',
         fontWeight: FontWeight.w900,
         // fontSize: _getSize(33),
         color: textColor,
@@ -47,7 +47,7 @@ class TitleText extends StatelessWidget{
   Widget build(BuildContext context) {
     return Text(text,
       style: Theme.of(context).textTheme.title.merge(TextStyle(
-        // fontFamily: 'Montserrat',
+        // fontFamily: 'Poppins',
         fontWeight: FontWeight.w900,
         // fontSize: _getSize(20),
         color: textColor,
@@ -76,7 +76,7 @@ class BodyText extends StatelessWidget{
   Widget build(BuildContext context) {
     return Text(text,
       style: Theme.of(context).textTheme.body1.merge(TextStyle(
-          // fontFamily: 'Lato',
+          // fontFamily: 'Poppins',
           // fontSize: _getTextSize(MediaQuery.of(context).size.width),
           color: textColor,
           fontWeight: fontWeight
@@ -106,7 +106,7 @@ class TinyText extends StatelessWidget{
 
     return Text(text,
       style: TextStyle(
-        // fontFamily: 'Montserrat',
+        // fontFamily: 'Poppins',
         fontWeight: FontWeight.w400,
         fontSize: _getSize(13),
         color: textColor,
