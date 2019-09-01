@@ -157,7 +157,7 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         // title: customText.HeadlineText(text: "TaskRunz",),
         centerTitle: true,
-        backgroundColor: Colors.orange.shade800,
+        backgroundColor: Colors.transparent,
         elevation: 0,
       ),
       body: Container(
