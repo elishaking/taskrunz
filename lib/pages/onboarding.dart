@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:scoped_model/scoped_model.dart';
+import 'package:taskrunz/pages/home.dart';
 import 'package:taskrunz/pages/name.dart';
+import 'package:taskrunz/scoped-models/main.dart';
 import 'package:taskrunz/widgets/custom_text.dart';
 
 class OnboardingPage extends StatefulWidget {
+  final MainModel model;
+
+  OnboardingPage(this.model);
+
   @override
   _OnboardingPageState createState() => _OnboardingPageState();
 }
@@ -23,7 +30,15 @@ class _OnboardingPageState extends State<OnboardingPage> with SingleTickerProvid
   void initState() {
     _animationController = AnimationController(vsync: this, duration: Duration(milliseconds: 2000));
     _initializeAnimations();
-    _animationController.forward();
+    _animationController.forward().whenComplete((){
+      widget.model.getName().then((bool nameExists) {
+        if(nameExists) {
+          Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
+            builder: (BuildContext context) => HomePage(widget.model)
+          ), (Route route) => false);
+        }
+      });
+    });
 
     super.initState();
   }
@@ -92,17 +107,21 @@ class _OnboardingPageState extends State<OnboardingPage> with SingleTickerProvid
                   parent: _animationController,
                   curve: Interval(0.6, 1, curve: Curves.easeInCubic)
                 )),
-                child: RaisedButton(
-                  child: BodyText(text: "BEGIN", textColor: Colors.orange.shade800,
-                  fontWeight: FontWeight.bold,),
-                  color: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(100)
-                  ),
-                  onPressed: (){
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) => NamePage()
-                    ));
+                child: ScopedModelDescendant(
+                  builder: (BuildContext context, Widget child, MainModel model){
+                    return model.isLoading ? CircularProgressIndicator() : RaisedButton(
+                      child: BodyText(text: "BEGIN", textColor: Colors.orange.shade800,
+                      fontWeight: FontWeight.bold,),
+                      color: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(100)
+                      ),
+                      onPressed: (){
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (BuildContext context) => NamePage()
+                        ));
+                      },
+                    );
                   },
                 ),
               )

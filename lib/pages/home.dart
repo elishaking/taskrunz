@@ -153,7 +153,7 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       backgroundColor: Colors.orange.shade800,
-      drawer: Drawer(),
+      // drawer: Drawer(),
       appBar: AppBar(
         // title: customText.HeadlineText(text: "TaskRunz",),
         centerTitle: true,

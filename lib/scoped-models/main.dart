@@ -57,8 +57,12 @@ class ConnectedModel extends Model{
   }
 
   Future<bool> getName() async{
+    toggleLoading(true);
+
     SharedPreferences pref = await SharedPreferences.getInstance();
     name = pref.getString("name");
+
+    toggleLoading(false);
 
     return name != null;
   }

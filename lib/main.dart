@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
           fontFamily: 'Nunito'
         ),
         // home: HomePage(_model),
-        home: OnboardingPage(),
+        home: OnboardingPage(_model),
       ),
     );
   }

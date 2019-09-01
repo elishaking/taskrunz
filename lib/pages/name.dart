@@ -17,6 +17,12 @@ class _NamePageState extends State<NamePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.orange.shade800,
+      appBar: AppBar(
+        // title: customText.HeadlineText(text: "TaskRunz",),
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
       body: SafeArea(
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 20),
@@ -59,9 +65,9 @@ class _NamePageState extends State<NamePage> {
                         _formKey.currentState.save();
                         model.saveName(_name);
 
-                        Navigator.of(context).push(MaterialPageRoute(
+                        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
                           builder: (BuildContext context) => HomePage(model)
-                        ));
+                        ), (Route route) => false);
                       }
                     },
                   );
