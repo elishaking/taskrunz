@@ -6,16 +6,16 @@ import '../models/task.dart';
 
 import '../widgets/custom_text.dart' as customText;
 
-class NewTaskGroupPage extends StatefulWidget{
+class AddTaskGroupPage extends StatefulWidget{
   final List<TaskGroup> taskGroups;
 
-  NewTaskGroupPage(this.taskGroups);
+  AddTaskGroupPage(this.taskGroups);
 
   @override
-  _NewTaskGroupPageState createState() => _NewTaskGroupPageState();
+  _AddTaskGroupPageState createState() => _AddTaskGroupPageState();
 }
 
-class _NewTaskGroupPageState extends State<NewTaskGroupPage> {
+class _AddTaskGroupPageState extends State<AddTaskGroupPage> {
   GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   String _text;
   List _colors = [

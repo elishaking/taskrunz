@@ -10,7 +10,7 @@ import '../widgets/custom_text.dart' as customText;
 import '../utils/responsive.dart';
 
 import './tasks.dart';
-import './new_task_group.dart';
+import './add_task_group.dart';
 
 class HomePage extends StatefulWidget{
   final MainModel model;
@@ -197,7 +197,7 @@ class _HomePageState extends State<HomePage> {
         child: Icon(Icons.add),
         onPressed: (){
           Navigator.of(context).push(MaterialPageRoute(
-            builder: (BuildContext context) => NewTaskGroupPage(_taskGroups)
+            builder: (BuildContext context) => AddTaskGroupPage(_taskGroups)
           ));
         },
       ),
