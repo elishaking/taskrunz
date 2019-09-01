@@ -144,6 +144,10 @@ class _TaskPageState extends State<TaskPage> {
               title: customText.HeadlineText(text: task.info, textColor: widget.taskGroup.color,),
             ),
             SizedBox(height: 5,),
+            if(task.taskSteps.length > 0)
+              ...List.generate(task.taskSteps.length, (index) {
+                return _buildTaskStep(task.taskSteps[index], index);
+              }),
             FlatButton(
               child: Row(
                 children: <Widget>[
@@ -161,6 +165,58 @@ class _TaskPageState extends State<TaskPage> {
             SizedBox(height: 10,),
           ],
         ),
+      ),
+    );
+  }
+
+  Dismissible _buildTaskStep(TaskStep taskStep, int index) {
+    return Dismissible(
+      key: UniqueKey(),
+      direction: DismissDirection.endToStart,
+      background: Container(
+        alignment: Alignment.centerRight,
+        padding: EdgeInsets.only(right: 10),
+        color: Colors.grey,
+        child: Icon(Icons.delete_forever, color: Colors.white, size: 30,),
+      ),
+      onDismissed: (DismissDirection dir){
+        widget.model.deleteTaskStep(task, index).then((_){
+          // _taskWithDates[_today].removeAt(index);
+        });
+      },
+      child: ListTile(
+        contentPadding: EdgeInsets.only(left: 0),
+        leading: SizedBox(
+          height: 100,
+          child: FittedBox(
+            child: Checkbox(
+              value: taskStep.done,
+              activeColor: widget.taskGroup.color,
+              onChanged: (bool value){
+                setState(() {
+                 taskStep.done = value;
+
+                 task.done = task.taskSteps.every((TaskStep taskStep) => taskStep.done);
+                });
+                widget.model.saveTasks();
+              },
+            ),
+          ),
+        ),
+        title: Text(task.info, style: task.done ? TextStyle(
+          color: Colors.black54,
+          decoration: TextDecoration.lineThrough,
+        ) : TextStyle(),),
+        // trailing: customText.BodyText(text: isToday(task.dateTime) ? "Today" : "${months[task.dateTime.month]} ${task.dateTime.day}", textColor: Colors.black87,),
+        trailing: IconButton(
+          icon: Icon(Icons.delete_forever),
+          onPressed: (){
+            
+          },
+        ),
+        onTap: (){
+          // todo: make task step edittable --> create edit task-step page
+        },
       ),
     );
   }

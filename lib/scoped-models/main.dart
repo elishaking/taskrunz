@@ -111,6 +111,16 @@ class TaskModel extends ConnectedModel{
     toggleLoading(false);
   }
 
+  Future deleteTaskStep(Task task, int index) async{
+    toggleLoading(true);
+
+    task.taskSteps.removeAt(index);
+
+    await saveTasks();
+
+    toggleLoading(false);
+  }
+
   Future fetchTasks() async{
     toggleLoading(true);
 
