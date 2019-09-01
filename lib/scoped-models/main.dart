@@ -125,7 +125,7 @@ class TaskModel extends ConnectedModel{
     toggleLoading(true);
 
     SharedPreferences pref = await SharedPreferences.getInstance();
-    pref.clear();
+    // pref.clear();
     String d = pref.getString('taskGroups');
     if(d != null){
       List data = json.decode(d);
