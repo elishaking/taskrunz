@@ -155,7 +155,7 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: Colors.orange.shade800,
       drawer: Drawer(),
       appBar: AppBar(
-        title: customText.HeadlineText(text: "TaskRunz",),
+        // title: customText.HeadlineText(text: "TaskRunz",),
         centerTitle: true,
         backgroundColor: Colors.orange.shade800,
         elevation: 0,

@@ -60,7 +60,7 @@ class _NewTaskGroupPageState extends State<NewTaskGroupPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('New Task Group'),
+        // title: Text('New Task Group'),
         centerTitle: true,
         elevation: 0,
       ),
