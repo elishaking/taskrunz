@@ -154,7 +154,7 @@ class _TaskPageState extends State<TaskPage> {
               ),
               onPressed: (){
                 Navigator.of(context).push(MaterialPageRoute(
-                  builder: (BuildContext context) => AddTaskStep(widget.taskGroup)
+                  builder: (BuildContext context) => AddTaskStep(widget.taskGroup, widget.taskIndex)
                 ));
               },
             ),

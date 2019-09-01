@@ -75,3 +75,31 @@ class Task{
     );
   }
 }
+
+class TaskStep{
+  int id;
+  String info;
+  bool done;
+
+  TaskStep({this.id, this.info, this.done});
+
+  Map<String, dynamic> toMap() {
+    var taskStepMap = <String, dynamic>{
+      'id': id,
+      'info': info,
+      'done': done
+    };
+    if (id != null) {
+      taskStepMap['id'] = id;
+    }
+    return taskStepMap;
+  }
+
+  static TaskStep fromMap(Map<String, dynamic> item){
+    return TaskStep(
+      id: item['id'],
+      info: item['info'],
+      done: item['done']
+    );
+  }
+}
