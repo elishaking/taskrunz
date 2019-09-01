@@ -216,7 +216,7 @@ class _TaskPageState extends State<TaskPage> {
                                       // String dateString = "${date.year}-0${date.month}-0${date.day}T${remindTime.hour}:${remindTime.minute}:30.799371Z";
                                       print(date.toIso8601String());
                                       print(time.format(context));
-                                      remindDate = DateTime(date.year, date.month, date.day, date.hour, time.minute, date.second); // DateTime.parse(dateString);
+                                      remindDate = DateTime(date.year, date.month, date.day, date.hour - 2, time.minute, date.second); // DateTime.parse(dateString);
                                       print(remindDate.toIso8601String());
                                     });
                                     _setNotification();
@@ -250,7 +250,7 @@ class _TaskPageState extends State<TaskPage> {
   }
 
   void _setNotification() async{
-    AndroidNotificationDetails androidNotificationDetails = AndroidNotificationDetails('channelId', 'channelName', 'channelDescription');
+    AndroidNotificationDetails androidNotificationDetails = AndroidNotificationDetails('channel id', 'channel NAME', 'CHANNEL DESCRIPTION');
     IOSNotificationDetails iosNotificationDetails = IOSNotificationDetails();
     NotificationDetails notificationDetails = NotificationDetails(androidNotificationDetails, iosNotificationDetails);
     // print(DateTime.now().millisecondsSinceEpoch ~/ 1000000);
@@ -258,11 +258,13 @@ class _TaskPageState extends State<TaskPage> {
     print(remindDate.toIso8601String());
     List<PendingNotificationRequest> pendingNotificationRequest = await flutterLocalNotificationsPlugin.pendingNotificationRequests();
 
+    // flutterLocalNotificationsPlugin.show(10100, "new", "test", notificationDetails);
+    print("${DateTime.now().timeZoneName} <--> ${DateTime.now().timeZoneOffset} <--> ${DateTime.now().toLocal().toIso8601String()} <--> ${DateTime.now().toUtc().toIso8601String()} <--> ${DateTime.now().toIso8601String()}");
     flutterLocalNotificationsPlugin.schedule(
       pendingNotificationRequest == null ? 0 : pendingNotificationRequest.length,
       "Pending Task", 
-      task.info, 
-      remindDate, 
+      "task.info", 
+      DateTime.now().add(Duration(seconds: 10)), 
       notificationDetails
     ).then((_){
       print("notification set");
