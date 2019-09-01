@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:taskrunz/pages/name.dart';
 import 'package:taskrunz/widgets/custom_text.dart';
 
 class OnboardingPage extends StatefulWidget {
@@ -99,7 +100,9 @@ class _OnboardingPageState extends State<OnboardingPage> with SingleTickerProvid
                     borderRadius: BorderRadius.circular(100)
                   ),
                   onPressed: (){
-                    
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) => NamePage()
+                    ));
                   },
                 ),
               )

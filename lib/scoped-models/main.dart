@@ -11,6 +11,7 @@ class MainModel extends Model with ConnectedModel, TaskGroupModel, TaskModel {}
 class ConnectedModel extends Model{
   bool _isLoading = false;
   List<TaskGroup> _taskGroups = new List<TaskGroup>();
+  String name;
   // [
   //   TaskGroup(
   //     idx: 1,
@@ -53,6 +54,20 @@ class ConnectedModel extends Model{
   void toggleLoading(bool value){
     _isLoading = value;
     notifyListeners();
+  }
+
+  Future<bool> getName() async{
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    name = pref.getString("name");
+
+    return name != null;
+  }
+
+  Future<bool> saveName(String newName) async{
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    name = newName;
+
+    return await pref.setString("name", newName);
   }
 }
 

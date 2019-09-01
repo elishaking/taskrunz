@@ -60,7 +60,7 @@ class Task{
       'info': info,
       'date_time': dateTime.toIso8601String(),
       'done': done,
-      'taskSteps': taskSteps == null ? [] : taskSteps.map((TaskStep taskStep) => taskStep.toMap()).toList()
+      'taskSteps': taskSteps == null ? List<TaskStep>() : taskSteps.map((TaskStep taskStep) => taskStep.toMap()).toList()
     };
     if (id != null) {
       taskMap['_id'] = id;
@@ -74,7 +74,7 @@ class Task{
       info: item['info'],
       dateTime: DateTime.parse(item['date_time']),
       done: item['done'],
-      taskSteps: item['taskSteps'] == null ? [] : item['taskSteps'].map((Map<String, dynamic> taskStep) => TaskStep.fromMap(taskStep)).toList()
+      taskSteps: item['taskSteps'] == null ? List<TaskStep>() : item['taskSteps'].map<TaskStep>((taskStep) => TaskStep.fromMap(taskStep)).toList()
     );
   }
 }

@@ -173,7 +173,7 @@ class _HomePageState extends State<HomePage> {
             ),
             SizedBox(height: getSize(context, 30),),
             customText.HeadlineText(
-              text: 'Hello King',
+              text: 'Hello ${widget.model.name}',
             ),
             SizedBox(height: 10,),
             customText.BodyText(
