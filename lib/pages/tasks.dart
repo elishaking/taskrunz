@@ -342,7 +342,9 @@ class _TasksPageState extends State<TasksPage> with SingleTickerProviderStateMix
         onTap: (){
           Navigator.of(context).push(MaterialPageRoute(
             builder: (BuildContext context) => TaskPage(widget.taskGroup, index, model)
-          ));
+          )).then((onValue){
+            animateProgress();
+          });
         },
       ),
     );

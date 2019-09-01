@@ -35,6 +35,8 @@ class _TaskPageState extends State<TaskPage> {
   DateTime remindDate;
   TimeOfDay remindTime;
 
+  static bool taskIsDone;
+
   final List<String> months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug',
   'Sep', 'Oct', 'Nov', 'Dec'];
 
@@ -43,6 +45,7 @@ class _TaskPageState extends State<TaskPage> {
   @override
   void initState() {
     task = widget.taskGroup.tasks[widget.taskIndex];
+    taskIsDone = task.done;
     flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
     AndroidInitializationSettings androidInitializationSettings = AndroidInitializationSettings('@drawable/notification_icon');
     IOSInitializationSettings iosInitializationSettings = IOSInitializationSettings();
@@ -132,13 +135,12 @@ class _TaskPageState extends State<TaskPage> {
               contentPadding: EdgeInsets.all(0),
               leading: Checkbox(
                 value: task.done,
+                activeColor: widget.taskGroup.color,
                 onChanged: (bool value){
                   setState(() {
                     task.done = value; 
                   });
-                  value ? widget.taskGroup.numTasksCompleted++ : widget.taskGroup.numTasksCompleted--;
-                  widget.taskGroup.progressPercent = (widget.taskGroup.numTasksCompleted / widget.taskGroup.numTask) * 100;
-                  widget.model.saveTasks();
+                  _updateTaskGroup(value);
                 },
               ),
               title: customText.HeadlineText(text: task.info, textColor: widget.taskGroup.color,),
@@ -169,6 +171,15 @@ class _TaskPageState extends State<TaskPage> {
     );
   }
 
+  void _updateTaskGroup(bool value) {
+    if(value == taskIsDone) return;
+
+    taskIsDone = value;
+    value ? widget.taskGroup.numTasksCompleted++ : widget.taskGroup.numTasksCompleted--;
+    widget.taskGroup.progressPercent = (widget.taskGroup.numTasksCompleted / widget.taskGroup.numTask) * 100;
+    widget.model.saveTasks();
+  }
+
   Dismissible _buildTaskStep(TaskStep taskStep, int index) {
     return Dismissible(
       key: UniqueKey(),
@@ -185,20 +196,20 @@ class _TaskPageState extends State<TaskPage> {
         });
       },
       child: ListTile(
-        contentPadding: EdgeInsets.only(left: 0),
+        // contentPadding: EdgeInsets.only(left: 0),
         leading: SizedBox(
-          height: 100,
+          height: 37,
           child: FittedBox(
             child: Checkbox(
+              materialTapTargetSize: MaterialTapTargetSize.padded,
               value: taskStep.done,
               activeColor: widget.taskGroup.color,
               onChanged: (bool value){
                 setState(() {
                  taskStep.done = value;
-
                  task.done = task.taskSteps.every((TaskStep taskStep) => taskStep.done);
                 });
-                widget.model.saveTasks();
+                _updateTaskGroup(value);
               },
             ),
           ),
@@ -210,6 +221,7 @@ class _TaskPageState extends State<TaskPage> {
         // trailing: customText.BodyText(text: isToday(task.dateTime) ? "Today" : "${months[task.dateTime.month]} ${task.dateTime.day}", textColor: Colors.black87,),
         trailing: IconButton(
           icon: Icon(Icons.delete_forever),
+          color: taskStep.done ? Colors.grey : Colors.black,
           onPressed: (){
             
           },
