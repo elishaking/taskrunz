@@ -12,7 +12,6 @@ class DatabaseManager {
   static Database _database;
   static String DB_NAME = "todo.db";
 
-
   static const TASK_TABLE = "taskTable";
   static const ID = "id";
   static const String INFO = "info";
