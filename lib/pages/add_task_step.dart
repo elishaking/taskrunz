@@ -38,11 +38,11 @@ class _AddTaskStepState extends State<AddTaskStep> {
                 TextFormField(
                   autofocus: true,
                   decoration: InputDecoration(
-                    labelText: "Task",
+                    labelText: "Task Step",
 
                   ),
                   validator: (String value){
-                    if(value.isEmpty) return 'Enter a new Task';
+                    if(value.isEmpty) return 'Enter Task step';
                   },
                   onSaved: (String value){
                     _text = value;
@@ -56,7 +56,7 @@ class _AddTaskStepState extends State<AddTaskStep> {
       floatingActionButton: ScopedModelDescendant<MainModel>(
         builder: (BuildContext context, Widget child, MainModel model){
           return FloatingActionButton(
-            heroTag: 'add_task_step',
+            // heroTag: 'add_task_step',
             child: Icon(Icons.add),
             backgroundColor: widget.taskGroup.color,
             onPressed: (){

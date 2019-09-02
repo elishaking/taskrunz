@@ -138,7 +138,8 @@ class _TaskPageState extends State<TaskPage> {
                 activeColor: widget.taskGroup.color,
                 onChanged: (bool value){
                   setState(() {
-                    task.done = value; 
+                    task.done = value;
+                    task.taskSteps.forEach((TaskStep taskStep) => taskStep.done = value);
                   });
                   _updateTaskGroup(value);
                 },
@@ -172,11 +173,12 @@ class _TaskPageState extends State<TaskPage> {
   }
 
   void _updateTaskGroup(bool value) {
-    if(value == taskIsDone) return;
-
-    taskIsDone = value;
-    value ? widget.taskGroup.numTasksCompleted++ : widget.taskGroup.numTasksCompleted--;
-    widget.taskGroup.progressPercent = (widget.taskGroup.numTasksCompleted / widget.taskGroup.numTask) * 100;
+    // print(taskIsDone);
+    if(value != taskIsDone) {
+      taskIsDone = value;
+      value ? widget.taskGroup.numTasksCompleted++ : widget.taskGroup.numTasksCompleted--;
+      widget.taskGroup.progressPercent = (widget.taskGroup.numTasksCompleted / widget.taskGroup.numTask) * 100;
+    }
     widget.model.saveTasks();
   }
 
@@ -209,12 +211,12 @@ class _TaskPageState extends State<TaskPage> {
                  taskStep.done = value;
                  task.done = task.taskSteps.every((TaskStep taskStep) => taskStep.done);
                 });
-                _updateTaskGroup(value);
+                _updateTaskGroup(task.done);
               },
             ),
           ),
         ),
-        title: Text(task.info, style: task.done ? TextStyle(
+        title: Text(taskStep.info, style: taskStep.done ? TextStyle(
           color: Colors.black54,
           decoration: TextDecoration.lineThrough,
         ) : TextStyle(),),
@@ -223,7 +225,13 @@ class _TaskPageState extends State<TaskPage> {
           icon: Icon(Icons.delete_forever),
           color: taskStep.done ? Colors.grey : Colors.black,
           onPressed: (){
-            
+            widget.model.deleteTaskStep(task, index).then((_){
+              // _taskWithDates[_today].removeAt(index);
+              setState(() {
+                task.done = task.taskSteps.every((TaskStep taskStep) => taskStep.done);
+              });
+              _updateTaskGroup(task.done);
+            });
           },
         ),
         onTap: (){

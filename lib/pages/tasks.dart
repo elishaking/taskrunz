@@ -319,6 +319,7 @@ class _TasksPageState extends State<TasksPage> with SingleTickerProviderStateMix
               onChanged: (bool value){
                 setState(() {
                  task.done = value; 
+                 task.taskSteps.forEach((TaskStep taskStep) => taskStep.done = value);
                 });
                 value ? widget.taskGroup.numTasksCompleted++ : widget.taskGroup.numTasksCompleted--;
                 widget.taskGroup.progressPercent = (widget.taskGroup.numTasksCompleted / widget.taskGroup.numTask) * 100;
@@ -336,7 +337,10 @@ class _TasksPageState extends State<TasksPage> with SingleTickerProviderStateMix
         trailing: IconButton(
           icon: Icon(Icons.delete_forever),
           onPressed: (){
-            
+            model.deleteTask(widget.taskGroup, index).then((_){
+              _taskWithDates[_today].removeAt(index);
+              animateProgress();
+            });
           },
         ),
         onTap: (){
