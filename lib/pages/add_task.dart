@@ -69,7 +69,7 @@ class _AddTaskState extends State<AddTask> {
                 Task newTask = Task(
                   id: widget.taskGroup.tasks.length,
                   info: _text,
-                  dateTime: DateTime.now(),
+                  timeCreated: DateTime.now(),
                   taskSteps: [],
                   done: false
                 );

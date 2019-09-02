@@ -21,7 +21,7 @@ dependencies:
     sdk: flutter
 
   sqflite: any
-  # path_provider: any
+  path_provider: any
 
   scoped_model: any
   shared_preferences: any

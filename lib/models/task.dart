@@ -42,11 +42,11 @@ class TaskGroup{
 class Task{
   int id;
   String info;
-  DateTime dateTime;
+  DateTime timeCreated;
   bool done;
   List<TaskStep> taskSteps;
 
-  Task({this.id, this.info, this.dateTime, this.done, this.taskSteps});
+  Task({this.id, this.info, this.timeCreated, this.done, this.taskSteps});
 
   // Task.fromMap(Map<String, dynamic> map) {
   //   id = map['_id'];
@@ -58,7 +58,7 @@ class Task{
   Map<String, dynamic> toMap() {
     var taskMap = <String, dynamic>{
       'info': info,
-      'date_time': dateTime.toIso8601String(),
+      'timeCreated': formatDateTime(timeCreated),
       'done': done,
       'taskSteps': taskSteps == null ? List<TaskStep>() : taskSteps.map((TaskStep taskStep) => taskStep.toMap()).toList()
     };
@@ -69,10 +69,11 @@ class Task{
   }
 
   static Task fromMap(Map<String, dynamic> item){
+    List<String> dateVals = "".split("+");
     return Task(
       id: item['_id'],
       info: item['info'],
-      dateTime: DateTime.parse(item['date_time']),
+      timeCreated: DateTime(int.parse(dateVals[0]), int.parse(dateVals[1]), int.parse(dateVals[2])),
       done: item['done'],
       taskSteps: item['taskSteps'] == null ? List<TaskStep>() : item['taskSteps'].map<TaskStep>((taskStep) => TaskStep.fromMap(taskStep)).toList()
     );
@@ -105,4 +106,8 @@ class TaskStep{
       done: item['done'],
     );
   }
+}
+
+int formatDateTime(DateTime dateTime){
+  return int.parse("${dateTime.year}+${dateTime.month}+${dateTime.day}");
 }

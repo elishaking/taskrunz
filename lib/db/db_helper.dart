@@ -1,124 +1,137 @@
-// import 'dart:io';
-// import 'package:path/path.dart';
-// import 'package:sqflite/sqflite.dart';
-// import 'package:path_provider/path_provider.dart';
+import 'dart:convert';
+import 'dart:io';
 
-// // database table and column names
-// final String tableWords = 'words';
-// final String columnId = '_id';
-// final String columnWord = 'word';
-// final String columnFrequency = 'frequency';
+import 'package:path_provider/path_provider.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:sqflite/sqlite_api.dart';
+import 'package:path/path.dart';
+import 'package:taskrunz/models/task.dart';
 
-// // data model class
-// // class Word {
+// Database db;
 
-// //   int id;
-// //   String word;
-// //   int frequency;
+class DatabaseManager {
+  static Database _database;
+  static String DB_NAME = "todo.db";
 
-// //   Word();
 
-// //   // convenience constructor to create a Word object
-// //   Word.fromMap(Map<String, dynamic> map) {
-// //     id = map[columnId];
-// //     word = map[columnWord];
-// //     frequency = map[columnFrequency];
-// //   }
+  static const TASK_TABLE = "taskTable";
+  static const ID = "id";
+  static const String INFO = "info";
+  static const String TIME_CREATED = "timeCreated";
+  static const String TASK_STEPS = "taskSteps";
 
-// //   // convenience method to create a Map from this Word object
-// //   Map<String, dynamic> toMap() {
-// //     var map = <String, dynamic>{
-// //       columnWord: word,
-// //       columnFrequency: frequency
-// //     };
-// //     if (id != null) {
-// //       map[columnId] = id;
-// //     }
-// //     return map;
-// //   }
-// // }
+  DatabaseManager() {
+    if(_database == null) initDatabase().then((Database db) => _database = db);
+  }
 
-// // singleton class to manage the database
-// class DatabaseHelper {
+  Database get database {
+    return _database;
+  }
 
-//   // This is the actual database filename that is saved in the docs directory.
-//   static final _databaseName = "Goalzz.db";
-//   // Increment this version when you need to change the schema.
-//   static final _databaseVersion = 1;
+  Future<Database> initDatabase() async{
+    final documentsDirectory = await getApplicationDocumentsDirectory();
+    String path = join(documentsDirectory.path, DB_NAME);
 
-//   // Make this a singleton class.
-//   DatabaseHelper._privateConstructor();
-//   static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
+    Database db = await openDatabase(path, version: 1, onCreate: _onCreate);
+    return db;
+  }
 
-//   // Only allow a single open connection to the database.
-//   static Database _database;
-//   Future<Database> get database async {
-//     if (_database != null) return _database;
-//     _database = await _initDatabase();
-//     return _database;
-//   }
+  Future<void> _onCreate(Database db, int version) async{
+    await createTaskTable(db);
+  }
 
-//   // open the database
-//   _initDatabase() async {
-//     // The path_provider plugin gets the right directory for Android or iOS.
-//     Directory documentsDirectory = await getApplicationDocumentsDirectory();
-//     String path = join(documentsDirectory.path, _databaseName);
-//     // Open the database. Can also add an onUpdate callback parameter.
-//     return await openDatabase(path,
-//         version: _databaseVersion,
-//         onCreate: _onCreate);
-//   }
+  Future<void> createTaskTable(Database db) async{
+    final String createTableSql = '''CREATE TABLE $TASK_TABLE
+    (
+      $ID CHAR PRIMARY KEY,
+      $INFO CHAR,
+      $TIME_CREATED TEXT,
+      $TASK_STEPS TEXT,
+    )''';
 
-//   // SQL string to create the database 
-//   Future _onCreate(Database db, int version) async {
-//     await db.execute('''
-//           CREATE TABLE $tableWords (
-//             $columnId INTEGER PRIMARY KEY,
-//             $columnWord TEXT NOT NULL,
-//             $columnFrequency INTEGER NOT NULL
-//           )
-//           ''');
-//   }
+    await db.execute(createTableSql);
+  }
 
-//   // Database helper methods:
+  /// get all [Task]s from database
+  Future<List<Task>> getAllTasks() async{
+    final sql = '''SELECT * FROM ${DatabaseManager.TASK_TABLE}''';
 
-//   Future<int> insert(String tableName, dynamic dataMap) async {
-//     Database db = await database;
-//     int id = await db.insert(tableName, dataMap);
-//     return id;
-//   }
+    final data = await _database.rawQuery(sql);
+    List<Task> tasks = List<Task>();
+    for(final node in data){
+      final task = Task.fromMap(node);
+      tasks.add(task);
+    }
 
-//   Future<dynamic> query(dynamic where, List<String> columns, List<String> whereArgs, String tableName) async {
-//     Database db = await database;
-//     List<Map> maps = await db.query(
-//         // tableWords,
-//         // columns: [columnId, columnWord, columnFrequency],
-//         // where: '$columnId = ?',
-//         // whereArgs: [id]
-//         tableName,
-//         columns: columns,
-//         where: '$where = ?',
-//         whereArgs: whereArgs
-//     );
-//     if (maps.length > 0) {
-//       // return Word.fromMap(maps.first);
-//       return maps.first;
-//     }
-//     return null;
-//   }
+    return tasks;
+  }
 
-//   // TODO: queryAllWords()
-//   // TODO: delete(int id)
-//   // TODO: update(Word word)
-// }
+  /// get [Task] from database with [id]
+  Future<Task> getTask(int id) async{
+    final data = await _database.query(DatabaseManager.TASK_TABLE, where: "${DatabaseManager.ID} == $id");
 
-// class DBCreateQueries{
-//   static const String task = '''
-//       CREATE TABLE task_table (
-//         _id INTEGER PRIMARY KEY,
-//         info TEXT NOT NULL,
-//         date_time TEXT NOT NULL
-//         done INTEGER NOT NULL
-//       )
-//       ''';
-// }
+    return Task.fromMap(data[0]);
+  }
+
+  /// get [Task] from database with [timeCreated]
+  Future<Task> getTaskWithDate(DateTime dateTime) async{
+    final data = await _database.query(DatabaseManager.TASK_TABLE, where: "${DatabaseManager.TIME_CREATED} == ${formatDateTime(dateTime)}");
+
+    return Task.fromMap(data[0]);
+  }
+
+  /// save [Task] to database and return its [id]
+  Future<int> addTask(Task task) async{
+    int id = -10;
+    try{
+      id = await _database.insert(DatabaseManager.TASK_TABLE, task.toMap());
+    } catch(e){
+      if(e.isUniqueConstraintError()) id = -1;
+      print("error: $e\id: $id");
+    }
+
+    print("inserted: $id");
+
+    return id;
+  }
+
+  /// delete [Task] from database
+  Future<void> deleteTask(Task task) async{
+    final sql = '''DELETE FROM ${DatabaseManager.TASK_TABLE} WHERE ${DatabaseManager.ID} == ${task.id}''';
+
+    final result = await _database.rawDelete(sql);
+    print("deleted: $result");
+  }
+
+  /// update [Task] in database
+  Future<void> updateTask(Task task) async{
+    final result = await _database.update(DatabaseManager.TASK_TABLE, task.toMap(), where: "${DatabaseManager.ID} == ${task.id}");
+    print("updated: $result");
+  }
+
+  Future<int> tasksCount() async{
+    final data = await _database.rawQuery('''SELECT COUNT(*) FROM ${DatabaseManager.TASK_TABLE}''');
+
+    print("count: " + jsonEncode(data[0]));
+    return data[0].values.elementAt(0);
+  }
+
+  Future<void> closeDb() async {
+    _database.close();
+  }
+  // Future<String> getDatabasePath(String dbName) async {
+  //   final String databasePath = await getDatabasesPath();
+  //   final String path = join(databasePath, dbName);
+
+  //   if(await Directory(path).exists()){
+  //     await deleteDatabase(path);
+  //   } else {
+  //     await Directory(path).create(recursive: true);
+  //   }
+
+  //   return path;
+  // }
+
+}
+
+// utitities
