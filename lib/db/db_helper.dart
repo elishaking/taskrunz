@@ -95,17 +95,21 @@ class DatabaseManager {
   }
 
   /// delete [Task] from database
-  Future<void> deleteTask(Task task) async{
+  Future<int> deleteTask(Task task) async{
     final sql = '''DELETE FROM ${DatabaseManager.TASK_TABLE} WHERE ${DatabaseManager.ID} == ${task.id}''';
 
-    final result = await _database.rawDelete(sql);
-    print("deleted: $result");
+    final count = await _database.rawDelete(sql);
+    print("deleted: $count");
+
+    return count;
   }
 
   /// update [Task] in database
-  Future<void> updateTask(Task task) async{
-    final result = await _database.update(DatabaseManager.TASK_TABLE, task.toMap(), where: "${DatabaseManager.ID} == ${task.id}");
-    print("updated: $result");
+  Future<int> updateTask(Task task) async{
+    final count = await _database.update(DatabaseManager.TASK_TABLE, task.toMap(), where: "${DatabaseManager.ID} == ${task.id}");
+    print("updated: $count");
+
+    return count;
   }
 
   Future<int> tasksCount() async{

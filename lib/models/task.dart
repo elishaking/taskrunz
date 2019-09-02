@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class TaskGroup{
-  int idx;
+  int id;
   IconData icon;
   String name;
   int numTask;
@@ -10,11 +10,11 @@ class TaskGroup{
   double progressPercent;
   List<Task> tasks = List<Task>();
 
-  TaskGroup({this.idx, this.icon, this.name, this.numTask, this.progressPercent, this.numTasksCompleted, this.color, this.tasks});
+  TaskGroup({this.id, this.icon, this.name, this.numTask, this.progressPercent, this.numTasksCompleted, this.color, this.tasks});
 
   Map<String, dynamic> toMap(){
     return {
-      'idx': idx,
+      'idx': id,
       'icon': [icon.codePoint, icon.fontFamily, icon.fontPackage, icon.matchTextDirection],
       'name': name,
       'numTask': numTask,
@@ -27,7 +27,7 @@ class TaskGroup{
 
   static TaskGroup fromMap(Map<String, dynamic> item){
     return TaskGroup(
-      idx: item['idx'],
+      id: item['idx'],
       icon: IconData(item['icon'][0], fontFamily: item['icon'][1], fontPackage: item['icon'][2], matchTextDirection: item['icon'][3]),
       name: item['name'],
       numTask: item['numTask'],
@@ -41,12 +41,13 @@ class TaskGroup{
 
 class Task{
   int id;
+  int taskGroupId;
   String info;
   DateTime timeCreated;
   bool done;
   List<TaskStep> taskSteps;
 
-  Task({this.id, this.info, this.timeCreated, this.done, this.taskSteps});
+  Task({this.id, this.taskGroupId, this.info, this.timeCreated, this.done, this.taskSteps});
 
   // Task.fromMap(Map<String, dynamic> map) {
   //   id = map['_id'];
@@ -63,7 +64,7 @@ class Task{
       'taskSteps': taskSteps == null ? List<TaskStep>() : taskSteps.map((TaskStep taskStep) => taskStep.toMap()).toList()
     };
     if (id != null) {
-      taskMap['_id'] = id;
+      taskMap['id'] = id;
     }
     return taskMap;
   }
@@ -71,7 +72,7 @@ class Task{
   static Task fromMap(Map<String, dynamic> item){
     List<String> dateVals = "".split("+");
     return Task(
-      id: item['_id'],
+      id: item['id'],
       info: item['info'],
       timeCreated: DateTime(int.parse(dateVals[0]), int.parse(dateVals[1]), int.parse(dateVals[2])),
       done: item['done'],

@@ -207,7 +207,7 @@ class _AddTaskGroupPageState extends State<AddTaskGroupPage> {
               if(_formKey.currentState.validate()){
                 _formKey.currentState.save();
                 model.addTaskGroup(TaskGroup(
-                  idx: widget.taskGroups.length,
+                  id: widget.taskGroups.length,
                   icon: _icons[_selectedIconIdx],
                   name: _text,
                   numTask: 0,

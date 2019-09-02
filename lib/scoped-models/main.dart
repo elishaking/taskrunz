@@ -3,10 +3,13 @@ import 'dart:async';
 
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:taskrunz/db/db_helper.dart';
 
 import '../models/task.dart';
 
-class MainModel extends Model with ConnectedModel, TaskGroupModel, TaskModel {}
+class MainModel extends Model with ConnectedModel, TaskGroupModel, TaskModel {
+  
+}
 
 class ConnectedModel extends Model{
   bool _isLoading = false;
@@ -50,6 +53,12 @@ class ConnectedModel extends Model{
   List<TaskGroup> get taskGroups{
     return _taskGroups;
   }
+
+  final DatabaseManager _databaseManager = DatabaseManager();
+  
+  // ConnectedModel(){
+  //   _databaseManager = DatabaseManager();
+  // }
 
   void toggleLoading(bool value){
     _isLoading = value;
@@ -96,7 +105,7 @@ class TaskModel extends ConnectedModel{
     taskGroup.numTask++;
     taskGroup.progressPercent = taskGroup.numTask == 0 ? 0 : (taskGroup.numTasksCompleted / taskGroup.numTask) * 100;
 
-    await saveTasks();
+    await addTaskDB(task);
 
     toggleLoading(false);
   }
@@ -106,14 +115,9 @@ class TaskModel extends ConnectedModel{
 
     task.taskSteps.add(taskStep);
     
-    await saveTasks();
+    await updateTaskDB(task);
 
     toggleLoading(false);
-  }
-
-  Future saveTasks() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    pref.setString('taskGroups', json.encode(_taskGroups.map((TaskGroup taskGroup) => taskGroup.toMap()).toList()));
   }
 
   Future deleteTask(TaskGroup taskGroup, int index) async{
@@ -125,7 +129,7 @@ class TaskModel extends ConnectedModel{
     taskGroup.numTask--;
     taskGroup.progressPercent = taskGroup.numTask == 0 ? 0 : (taskGroup.numTasksCompleted / taskGroup.numTask) * 100;
 
-    await saveTasks();
+    await deleteTaskDB(taskGroup.tasks[index]);
 
     toggleLoading(false);
   }
@@ -135,9 +139,32 @@ class TaskModel extends ConnectedModel{
 
     task.taskSteps.removeAt(index);
 
-    await saveTasks();
+    await updateTaskDB(task);
 
     toggleLoading(false);
+  }
+
+  // Future saveTasks() async {
+  //   SharedPreferences pref = await SharedPreferences.getInstance();
+  //   pref.setString('taskGroups', json.encode(_taskGroups.map((TaskGroup taskGroup) => taskGroup.toMap()).toList()));
+  // }
+
+  Future<bool> addTaskDB(Task task) async{
+    task.id = await _databaseManager.addTask(task);
+
+    return task.id != -1;
+  }
+
+  Future<bool> updateTaskDB(Task task) async{
+    int count = await _databaseManager.updateTask(task);
+
+    return count != 0;
+  }
+
+  Future<bool> deleteTaskDB(Task task) async{
+    int count = await _databaseManager.deleteTask(task);
+
+    return count != 0;
   }
 
   Future fetchTasks() async{
