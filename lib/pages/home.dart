@@ -58,7 +58,10 @@ class _HomePageState extends State<HomePage> {
 
   @override
   initState(){
-    widget.model.fetchTasks().then((_){
+    // widget.model.fetchTasks().then((_){
+    //   _taskGroups = widget.model.taskGroups;
+    // });
+    widget.model.getAllTaskGroupsDB().then((_){
       _taskGroups = widget.model.taskGroups;
     });
     super.initState();

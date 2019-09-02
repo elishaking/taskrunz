@@ -89,6 +89,10 @@ class TaskGroupModel extends ConnectedModel{
 }
 
 class TaskModel extends ConnectedModel{
+  Future<void> getAllTaskGroupsDB() async{
+    _taskGroups = await _databaseManager.getAllTaskGroups();
+  }
+
   Future addTaskGroup(TaskGroup taskGroup) async{
     toggleLoading(true);
 

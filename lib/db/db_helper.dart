@@ -78,6 +78,19 @@ class DatabaseManager {
     return id;
   }
 
+  Future<List<TaskGroup>> getAllTaskGroups() async{
+    final sql = '''SELECT * FROM ${DatabaseManager.TASKGROUP_TABLE}''';
+
+    final data = await _database.rawQuery(sql);
+    List<TaskGroup> taskGroups = List<TaskGroup>();
+    for(final node in data){
+      final taskGroup = TaskGroup.fromMap(node);
+      taskGroups.add(taskGroup);
+    }
+
+    return taskGroups;
+  }
+
   /// get [TaskGroup] from database with [id]
   Future<TaskGroup> getTaskGroup(int id) async{
     final data = await _database.query(DatabaseManager.TASKGROUP_TABLE, where: "${DatabaseManager.ID} == $id");
