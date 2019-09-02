@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -40,6 +39,7 @@ class DatabaseManager {
     await createTaskTable(db);
   }
 
+  /// create [Task] table
   Future<void> createTaskTable(Database db) async{
     final String createTableSql = '''CREATE TABLE $TASK_TABLE
     (
