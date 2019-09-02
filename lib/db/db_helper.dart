@@ -18,6 +18,14 @@ class DatabaseManager {
   static const String TIME_CREATED = "timeCreated";
   static const String TASK_STEPS = "taskSteps";
 
+  static const String TASKGROUP_TABLE = "taskGroupTable";
+  static const String ICON = "icon";
+  static const String NAME = "name";
+  static const String NUM_TASK = "numTask";
+  static const String NUM_TASK_COMPLETED = "numTasksCompleted";
+  static const String COLOR = "color";
+  static const String PROGRESS_PERCENT = "progressPercent";
+
   DatabaseManager() {
     if(_database == null) initDatabase().then((Database db) => _database = db);
   }
@@ -35,14 +43,70 @@ class DatabaseManager {
   }
 
   Future<void> _onCreate(Database db, int version) async{
+    await createTaskGroupTable(db);
     await createTaskTable(db);
   }
+
+  /// create [TaskGroup] table
+  Future<void> createTaskGroupTable(Database db) async{
+    final String createTableSql = '''CREATE TABLE $TASKGROUP_TABLE
+    (
+      $ID INTEGER PRIMARY KEY AUTOINCREMENT,
+      $ICON TEXT,
+      $NAME TEXT,
+      $NUM_TASK INTEGER,
+      $NUM_TASK_COMPLETED INTEGER,
+      $COLOR TEXT,
+      $PROGRESS_PERCENT REAL,
+    )''';
+
+    await db.execute(createTableSql);
+  }
+
+  /// save [TaskGroup] to database and return its [id]
+  Future<int> addTaskGroup(TaskGroup taskGroup) async{
+    int id = -10;
+    try{
+      id = await _database.insert(DatabaseManager.TASKGROUP_TABLE, taskGroup.toMap());
+    } catch(e){
+      if(e.isUniqueConstraintError()) id = -1;
+      print("error: $e\id: $id");
+    }
+
+    print("inserted: $id");
+
+    return id;
+  }
+
+  /// get [TaskGroup] from database with [id]
+  Future<TaskGroup> getTaskGroup(int id) async{
+    final data = await _database.query(DatabaseManager.TASKGROUP_TABLE, where: "${DatabaseManager.ID} == $id");
+
+    return TaskGroup.fromMap(data[0]);
+  }
+
+  /// delete [TaskGroup] from database
+  Future<int> deleteTaskGroup(TaskGroup taskGroup) async{
+    final count = await _database.delete(DatabaseManager.TASKGROUP_TABLE, where: "${DatabaseManager.ID} == ${taskGroup.id}");
+    print("deleted: $count");
+
+    return count;
+  }
+
+  /// update [TaskGroup] in database
+  Future<int> updateTaskGroup(TaskGroup taskGroup) async{
+    final count = await _database.update(DatabaseManager.TASKGROUP_TABLE, taskGroup.toMap(), where: "${DatabaseManager.ID} == ${taskGroup.id}");
+    print("updated: $count");
+
+    return count;
+  }
+
 
   /// create [Task] table
   Future<void> createTaskTable(Database db) async{
     final String createTableSql = '''CREATE TABLE $TASK_TABLE
     (
-      $ID CHAR PRIMARY KEY,
+      $ID INTEGER PRIMARY KEY AUTOINCREMENT,
       $INFO CHAR,
       $TIME_CREATED TEXT,
       $TASK_STEPS TEXT,

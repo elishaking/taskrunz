@@ -85,19 +85,21 @@ class ConnectedModel extends Model{
 }
 
 class TaskGroupModel extends ConnectedModel{
-  Future addTaskGroup(TaskGroup taskGroup) async{
-    toggleLoading(true);
-
-    _taskGroups.add(taskGroup);
-
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    pref.setString('taskGroups', json.encode(_taskGroups.map((TaskGroup taskGroup) => taskGroup.toMap()).toList()));
-
-    toggleLoading(false);
-  }
+  
 }
 
 class TaskModel extends ConnectedModel{
+  Future addTaskGroup(TaskGroup taskGroup) async{
+    toggleLoading(true);
+
+    // SharedPreferences pref = await SharedPreferences.getInstance();
+    // pref.setString('taskGroups', json.encode(_taskGroups.map((TaskGroup taskGroup) => taskGroup.toMap()).toList()));
+    await addTaskGroupDB(taskGroup);
+    _taskGroups.add(taskGroup);
+
+    toggleLoading(false);
+  }
+
   Future addTask(Task task, TaskGroup taskGroup) async{
     toggleLoading(true);
 
@@ -105,6 +107,7 @@ class TaskModel extends ConnectedModel{
     taskGroup.numTask++;
     taskGroup.progressPercent = taskGroup.numTask == 0 ? 0 : (taskGroup.numTasksCompleted / taskGroup.numTask) * 100;
 
+    await updateTaskGroupDB(taskGroup);
     await addTaskDB(task);
 
     toggleLoading(false);
@@ -129,6 +132,7 @@ class TaskModel extends ConnectedModel{
     taskGroup.numTask--;
     taskGroup.progressPercent = taskGroup.numTask == 0 ? 0 : (taskGroup.numTasksCompleted / taskGroup.numTask) * 100;
 
+    await updateTaskGroupDB(taskGroup);
     await deleteTaskDB(taskGroup.tasks[index]);
 
     toggleLoading(false);
@@ -142,6 +146,31 @@ class TaskModel extends ConnectedModel{
     await updateTaskDB(task);
 
     toggleLoading(false);
+  }
+
+  Future<bool> updateAll(TaskGroup taskGroup, Task task) async{
+    await updateTaskGroupDB(taskGroup);
+    await updateTaskDB(task);
+
+    return true;
+  }
+
+  Future<bool> addTaskGroupDB(TaskGroup taskGroup) async{
+    taskGroup.id = await _databaseManager.addTaskGroup(taskGroup);
+
+    return taskGroup.id != -1;
+  }
+
+  Future<bool> updateTaskGroupDB(TaskGroup taskGroup) async{
+    int count = await _databaseManager.updateTaskGroup(taskGroup);
+
+    return count != 0;
+  }
+
+  Future<bool> deleteTaskGroupDB(TaskGroup taskGroup) async{
+    int count = await _databaseManager.deleteTaskGroup(taskGroup);
+
+    return count != 0;
   }
 
   // Future saveTasks() async {

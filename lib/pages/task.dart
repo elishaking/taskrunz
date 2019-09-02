@@ -179,7 +179,7 @@ class _TaskPageState extends State<TaskPage> {
       value ? widget.taskGroup.numTasksCompleted++ : widget.taskGroup.numTasksCompleted--;
       widget.taskGroup.progressPercent = (widget.taskGroup.numTasksCompleted / widget.taskGroup.numTask) * 100;
     }
-    widget.model.saveTasks();
+    widget.model.updateAll(widget.taskGroup, task);
   }
 
   Dismissible _buildTaskStep(TaskStep taskStep, int index) {
