@@ -67,6 +67,94 @@ class _HomePageState extends State<HomePage> {
     super.initState();
   }
 
+  @override
+  Widget build(BuildContext context) {
+    DateTime _date = DateTime.now();
+
+    return Scaffold(
+      backgroundColor: Colors.orange.shade800,
+      // drawer: Drawer(),
+      // appBar: AppBar(
+      //   // title: customText.HeadlineText(text: "TaskRunz",),
+      //   centerTitle: true,
+      //   backgroundColor: Colors.transparent,
+      //   elevation: 0,
+      // ),
+      body: Container(
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            SizedBox(height: getSize(context, 20),),
+            // CircleAvatar(
+            //   // backgroundColor: Colors.white,
+            //   radius: 40,
+            //   backgroundImage: AssetImage('assets/passport.png'),
+            // ),
+            Icon(Icons.schedule, size: getSize(context, 100), color: Colors.white,),
+            SizedBox(height: getSize(context, 20),),
+            customText.HeadlineText(
+              text: 'Hello ${widget.model.name}',
+            ),
+            SizedBox(height: 10,),
+            customText.BodyText(
+              text: "Let's get cracking"
+            ),
+            // SizedBox(height: 5,),
+            // customText.BodyText(text: "You have 3 tasks today"),
+            SizedBox(height: getSize(context, 30),),
+            customText.BodyText(text: "${months[_date.month].toUpperCase()} ${_date.day}, ${_date.year}", fontWeight: FontWeight.bold,),
+            SizedBox(height: 5,),
+            SizedBox(height: 10),
+            ScopedModelDescendant<MainModel>(
+              builder: (BuildContext context, Widget child, MainModel model){
+                return _buildTaskGroups(context, model);
+              },
+            )
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: (){
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (BuildContext context) => AddTaskGroupPage(_taskGroups)
+          ));
+        },
+      ),
+    );
+  }
+
+  Widget _buildTaskGroups(BuildContext context, MainModel model) {
+    if(model.isLoading){
+      return Expanded(
+        child: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    } else if(model.taskGroups.length == 0) {
+      return Expanded(
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Icon(Icons.no_sim, size: getSize(context, 200), color: Colors.white.withOpacity(0.3),),
+              customText.BodyText(text: "No Tasks Yet", fontWeight: FontWeight.w700,)
+            ],
+          )
+        ),
+      );
+    } else {
+      return SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: List.generate(_taskGroups.length, (int index) => _buildTaskGroup(context, _taskGroups[index])),
+        ),
+      );
+    }
+  }
+
   Widget _buildTaskGroup(BuildContext context, TaskGroup taskGroup){
     final double proressIndicatorWidth = getSize(context, 220);
     final double progress = taskGroup.numTask == 0 ? 0 : ((taskGroup.numTasksCompleted / taskGroup.numTask) * proressIndicatorWidth).roundToDouble();
@@ -148,92 +236,5 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    DateTime _date = DateTime.now();
-
-    return Scaffold(
-      backgroundColor: Colors.orange.shade800,
-      // drawer: Drawer(),
-      appBar: AppBar(
-        // title: customText.HeadlineText(text: "TaskRunz",),
-        centerTitle: true,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-      ),
-      body: Container(
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            SizedBox(height: getSize(context, 20),),
-            // CircleAvatar(
-            //   // backgroundColor: Colors.white,
-            //   radius: 40,
-            //   backgroundImage: AssetImage('assets/passport.png'),
-            // ),
-            Icon(Icons.schedule, size: 100, color: Colors.white,),
-            SizedBox(height: getSize(context, 30),),
-            customText.HeadlineText(
-              text: 'Hello ${widget.model.name}',
-            ),
-            SizedBox(height: 10,),
-            customText.BodyText(
-              text: "Let's get cracking"
-            ),
-            // SizedBox(height: 5,),
-            // customText.BodyText(text: "You have 3 tasks today"),
-            SizedBox(height: 30,),
-            customText.BodyText(text: "${months[_date.month].toUpperCase()} ${_date.day}, ${_date.year}", fontWeight: FontWeight.bold,),
-            SizedBox(height: 5,),
-            SizedBox(height: 10),
-            ScopedModelDescendant<MainModel>(
-              builder: (BuildContext context, Widget child, MainModel model){
-                return _buildTaskGroups(context, model);
-              },
-            )
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: (){
-          Navigator.of(context).push(MaterialPageRoute(
-            builder: (BuildContext context) => AddTaskGroupPage(_taskGroups)
-          ));
-        },
-      ),
-    );
-  }
-
-  Widget _buildTaskGroups(BuildContext context, MainModel model) {
-    if(model.isLoading){
-      return Expanded(
-        child: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
-    } else if(model.taskGroups.length == 0) {
-      return Expanded(
-        child: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Icon(Icons.no_sim, size: getSize(context, 200), color: Colors.white.withOpacity(0.3),),
-              customText.BodyText(text: "No Tasks Yet", fontWeight: FontWeight.w700,)
-            ],
-          )
-        ),
-      );
-    } else {
-      return SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          children: List.generate(_taskGroups.length, (int index) => _buildTaskGroup(context, _taskGroups[index])),
-        ),
-      );
-    }
   }
 }

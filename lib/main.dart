@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
           // or simply save your changes to "hot reload" in a Flutter IDE).
           // Notice that the counter didn't reset back to zero; the application
           // is not restarted.
-          primaryColor: Colors.blue,
+          primaryColor: Color.fromRGBO(41, 51, 92, 1),
           // accentColor: Colors.orange,
           fontFamily: 'Nunito'
         ),
