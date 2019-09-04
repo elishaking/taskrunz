@@ -97,7 +97,7 @@ class _HomePageState extends State<HomePage> {
                   Icon(taskGroup.icon, color: taskGroup.color,),
                 // ),
                 Expanded(child: Container(),),
-                customText.BodyText(text: '${taskGroup.numTask} Tasks', textColor: Colors.grey,),
+                customText.BodyText(text: '${taskGroup.numTask} ${taskGroup.numTask == 1 ? 'Task' : 'Tasks'}', textColor: Colors.grey,),
                 SizedBox(height: 10,),
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 7, vertical: 3),
