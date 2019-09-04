@@ -128,6 +128,7 @@ class TaskModel extends ConnectedModel{
     toggleLoading(true);
 
     task.taskSteps.add(taskStep);
+    task.done = false;
     
     await _updateTaskDB(task);
 
