@@ -17,6 +17,7 @@ class DatabaseManager {
   static const TASK_GROUP_ID = "taskGroupId";
   static const String INFO = "info";
   static const String TIME_CREATED = "timeCreated";
+  static const String DONE = "done";
   static const String TASK_STEPS = "taskSteps";
 
   static const String TASKGROUP_TABLE = "taskGroupTable";
@@ -121,7 +122,9 @@ class DatabaseManager {
     final String createTableSql = '''CREATE TABLE $TASK_TABLE
     (
       $ID INTEGER PRIMARY KEY AUTOINCREMENT,
+      $TASK_GROUP_ID INTERGER,
       $INFO CHAR,
+      $DONE INTEGER,
       $TIME_CREATED TEXT,
       $TASK_STEPS TEXT
     )''';

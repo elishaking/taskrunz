@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 
+/// Class for a new [taskGroup] - saved in a table
 class TaskGroup{
   int id;
   IconData icon;
@@ -16,32 +17,33 @@ class TaskGroup{
 
   Map<String, dynamic> toMap(){
     return {
-      'id': id,
+      // 'id': id,
       'icon': jsonEncode([icon.codePoint, icon.fontFamily, icon.fontPackage, icon.matchTextDirection]),
       'name': name,
       'numTask': numTask,
       'numTasksCompleted': numTasksCompleted,
       'color': color.value.toString(),
-      'progressPercent': progressPercent.toString(),
+      'progressPercent': progressPercent,
       // 'tasks': tasks.length > 0 ? tasks.map((Task task) => task.toMap()).toList() : []
     };
   }
 
   static TaskGroup fromMap(Map<String, dynamic> item){
-    item['icon'] = jsonDecode(item['icon']);
+    final icon = jsonDecode(item['icon']);
     return TaskGroup(
       id: item['id'],
-      icon: IconData(item['icon'][0], fontFamily: item['icon'][1], fontPackage: item['icon'][2], matchTextDirection: item['icon'][3]),
+      icon: IconData(icon[0], fontFamily: icon[1], fontPackage: icon[2], matchTextDirection: icon[3]),
       name: item['name'],
       numTask: item['numTask'],
       numTasksCompleted: item['numTasksCompleted'],
       color: Color(int.parse(item['color'])),
-      progressPercent: double.parse(item['progressPercent']),
+      progressPercent: item['progressPercent'],
       // tasks: item['tasks'].map<Task>((task) => Task.fromMap(task)).toList()
     );
   }
 }
 
+/// Class for a new [task] - saved in a table
 class Task{
   int id;
   int taskGroupId;
@@ -61,29 +63,31 @@ class Task{
 
   Map<String, dynamic> toMap() {
     var taskMap = <String, dynamic>{
+      'taskGroupId': taskGroupId,
       'info': info,
       'timeCreated': formatDateTime(timeCreated),
-      'done': done,
-      'taskSteps': taskSteps == null ? List<TaskStep>() : taskSteps.map((TaskStep taskStep) => taskStep.toMap()).toList()
+      'done': done ? 1 : 0,
+      'taskSteps': jsonEncode(taskSteps == null ? List<TaskStep>() : taskSteps.map((TaskStep taskStep) => taskStep.toMap()).toList())
     };
-    if (id != null) {
-      taskMap['id'] = id;
-    }
+    // if (id != null) {
+    //   taskMap['id'] = id;
+    // }
     return taskMap;
   }
 
   static Task fromMap(Map<String, dynamic> item){
-    List<String> dateVals = "".split("+");
+    List<String> dateVals = item["timeCreated"].split("+");
     return Task(
       id: item['id'],
       info: item['info'],
       timeCreated: DateTime(int.parse(dateVals[0]), int.parse(dateVals[1]), int.parse(dateVals[2]), 0, 30),
       done: item['done'],
-      taskSteps: item['taskSteps'] == null ? List<TaskStep>() : item['taskSteps'].map<TaskStep>((taskStep) => TaskStep.fromMap(taskStep)).toList()
+      taskSteps: jsonDecode(item['taskSteps']).map<TaskStep>((taskStep) => TaskStep.fromMap(taskStep)).toList()
     );
   }
 }
 
+/// Class for a new taskStep - saved as a string in the [Task] table
 class TaskStep{
   int id;
   String info;
@@ -93,13 +97,13 @@ class TaskStep{
 
   Map<String, dynamic> toMap() {
     var taskStepMap = <String, dynamic>{
-      'id': id,
+      // 'id': id,
       'info': info,
       'done': done
     };
-    if (id != null) {
-      taskStepMap['id'] = id;
-    }
+    // if (id != null) {
+    //   taskStepMap['id'] = id;
+    // }
     return taskStepMap;
   }
 
@@ -107,11 +111,11 @@ class TaskStep{
     return TaskStep(
       id: item['id'],
       info: item['info'],
-      done: item['done'],
+      done: item['done'] == 1 ? true : false,
     );
   }
 }
 
-int formatDateTime(DateTime dateTime){
-  return int.parse("${dateTime.year}+${dateTime.month}+${dateTime.day}");
+String formatDateTime(DateTime dateTime){
+  return "${dateTime.year}+${dateTime.month}+${dateTime.day}";
 }
