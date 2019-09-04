@@ -58,7 +58,7 @@ class DatabaseManager {
       $NUM_TASK INTEGER,
       $NUM_TASK_COMPLETED INTEGER,
       $COLOR TEXT,
-      $PROGRESS_PERCENT REAL,
+      $PROGRESS_PERCENT REAL
     )''';
 
     await db.execute(createTableSql);
@@ -123,7 +123,7 @@ class DatabaseManager {
       $ID INTEGER PRIMARY KEY AUTOINCREMENT,
       $INFO CHAR,
       $TIME_CREATED TEXT,
-      $TASK_STEPS TEXT,
+      $TASK_STEPS TEXT
     )''';
 
     await db.execute(createTableSql);
@@ -159,7 +159,7 @@ class DatabaseManager {
 
   /// get all [Task]s from database with a given [TaskGroup] [id]
   Future<List<Task>> getAllTasksWithTaskGroupId(int taskGroupId) async{
-    final data = await _database.query(DatabaseManager.TASK_TABLE, where: "${DatabaseManager.TASK_GROUP_ID} == $taskGroupId");
+    final data = await _database.query(DatabaseManager.TASK_TABLE, where: "${DatabaseManager.TASK_GROUP_ID} == $taskGroupId", );
 
     List<Task> tasks = List<Task>();
     for(final node in data){

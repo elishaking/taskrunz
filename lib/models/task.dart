@@ -16,7 +16,7 @@ class TaskGroup{
 
   Map<String, dynamic> toMap(){
     return {
-      'idx': id,
+      'id': id,
       'icon': jsonEncode([icon.codePoint, icon.fontFamily, icon.fontPackage, icon.matchTextDirection]),
       'name': name,
       'numTask': numTask,
@@ -30,7 +30,7 @@ class TaskGroup{
   static TaskGroup fromMap(Map<String, dynamic> item){
     item['icon'] = jsonDecode(item['icon']);
     return TaskGroup(
-      id: item['idx'],
+      id: item['id'],
       icon: IconData(item['icon'][0], fontFamily: item['icon'][1], fontPackage: item['icon'][2], matchTextDirection: item['icon'][3]),
       name: item['name'],
       numTask: item['numTask'],
@@ -77,7 +77,7 @@ class Task{
     return Task(
       id: item['id'],
       info: item['info'],
-      timeCreated: DateTime(int.parse(dateVals[0]), int.parse(dateVals[1]), int.parse(dateVals[2])),
+      timeCreated: DateTime(int.parse(dateVals[0]), int.parse(dateVals[1]), int.parse(dateVals[2]), 0, 30),
       done: item['done'],
       taskSteps: item['taskSteps'] == null ? List<TaskStep>() : item['taskSteps'].map<TaskStep>((taskStep) => TaskStep.fromMap(taskStep)).toList()
     );

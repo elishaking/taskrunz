@@ -59,19 +59,21 @@ class _TasksPageState extends State<TasksPage> with SingleTickerProviderStateMix
   Map<String, List<Task>> _createListWithDates(){
     if(widget.taskGroup.tasks.length == 0) return Map<String, List<Task>>();
 
-    Map<String, List<Task>> map = Map<String, List<Task>>();
+    Map<String, List<Task>> taskWithDates = Map<String, List<Task>>();
     List<Task> tasks = List.from(widget.taskGroup.tasks);
     DateTime currentDate = tasks[0].timeCreated;
     for(int i = 0; i < tasks.length; ){
-      if(isDay(tasks[i].timeCreated, currentDate.day, currentDate.month)){
-        if(map["${months[currentDate.month]} ${currentDate.day}"] == null) map["${months[currentDate.month]} ${currentDate.day}"] = List<Task>();
-        map["${months[currentDate.month]} ${currentDate.day}"].add(tasks[i]);
+      // if(isDay(tasks[i].timeCreated, currentDate.day, currentDate.month)){
+      if(tasks[i].timeCreated.isAtSameMomentAs(currentDate)){
+        String dateKey = "${months[currentDate.month]} ${currentDate.day}";
+        if(taskWithDates[dateKey] == null) taskWithDates[dateKey] = List<Task>();
+        taskWithDates[dateKey].add(tasks[i]);
         i++;
       } else{
         currentDate = tasks[i].timeCreated;
       }
     }
-    return map;
+    return taskWithDates;
   }
 
 /*
