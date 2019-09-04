@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:async';
 
 import 'package:scoped_model/scoped_model.dart';
@@ -89,21 +88,28 @@ class TaskGroupModel extends ConnectedModel{
 }
 
 class TaskModel extends ConnectedModel{
+
+  /// gets all [taskGroups] from the database with all their corresponding [tasks]
   Future<void> getAllTaskGroupsDB() async{
     _taskGroups = await _databaseManager.getAllTaskGroups();
+    _taskGroups.forEach(await (TaskGroup taskGroup) async {
+      taskGroup.tasks = await _databaseManager.getAllTasksWithTaskGroupId(taskGroup.id);
+    });
   }
 
+  /// adds a new [TaskGroup] to the database and the [List] of [TaskGroup] objects already in memory
   Future addTaskGroup(TaskGroup taskGroup) async{
     toggleLoading(true);
 
     // SharedPreferences pref = await SharedPreferences.getInstance();
     // pref.setString('taskGroups', json.encode(_taskGroups.map((TaskGroup taskGroup) => taskGroup.toMap()).toList()));
-    await addTaskGroupDB(taskGroup);
+    await _addTaskGroupDB(taskGroup);
     _taskGroups.add(taskGroup);
 
     toggleLoading(false);
   }
 
+  /// adds a new [Task] to the database and the corresponding [TaskGroup] object already in memory
   Future addTask(Task task, TaskGroup taskGroup) async{
     toggleLoading(true);
 
@@ -111,22 +117,24 @@ class TaskModel extends ConnectedModel{
     taskGroup.numTask++;
     taskGroup.progressPercent = taskGroup.numTask == 0 ? 0 : (taskGroup.numTasksCompleted / taskGroup.numTask) * 100;
 
-    await updateTaskGroupDB(taskGroup);
-    await addTaskDB(task);
+    await _updateTaskGroupDB(taskGroup);
+    await _addTaskDB(task);
 
     toggleLoading(false);
   }
 
+  /// adds a new [TaskStep] to the database and the corresponding [Task] object already in memory
   Future addTaskStep(Task task, TaskStep taskStep) async{
     toggleLoading(true);
 
     task.taskSteps.add(taskStep);
     
-    await updateTaskDB(task);
+    await _updateTaskDB(task);
 
     toggleLoading(false);
   }
 
+  /// deletes a [Task] from the database and the corresponding [TaskGroup] object already in memory
   Future deleteTask(TaskGroup taskGroup, int index) async{
     toggleLoading(true);
 
@@ -136,42 +144,44 @@ class TaskModel extends ConnectedModel{
     taskGroup.numTask--;
     taskGroup.progressPercent = taskGroup.numTask == 0 ? 0 : (taskGroup.numTasksCompleted / taskGroup.numTask) * 100;
 
-    await updateTaskGroupDB(taskGroup);
-    await deleteTaskDB(taskGroup.tasks[index]);
+    await _updateTaskGroupDB(taskGroup);
+    await _deleteTaskDB(taskGroup.tasks[index]);
 
     toggleLoading(false);
   }
 
+  /// deletes a [TaskStep] from the database and the corresponding [Task] object already in memory
   Future deleteTaskStep(Task task, int index) async{
     toggleLoading(true);
 
     task.taskSteps.removeAt(index);
 
-    await updateTaskDB(task);
+    await _updateTaskDB(task);
 
     toggleLoading(false);
   }
 
+  /// updates all contents of the database including [TaskGroups] and [Tasks]
   Future<bool> updateAll(TaskGroup taskGroup, Task task) async{
-    await updateTaskGroupDB(taskGroup);
-    await updateTaskDB(task);
+    await _updateTaskGroupDB(taskGroup);
+    await _updateTaskDB(task);
 
     return true;
   }
 
-  Future<bool> addTaskGroupDB(TaskGroup taskGroup) async{
+  Future<bool> _addTaskGroupDB(TaskGroup taskGroup) async{
     taskGroup.id = await _databaseManager.addTaskGroup(taskGroup);
 
     return taskGroup.id != -1;
   }
 
-  Future<bool> updateTaskGroupDB(TaskGroup taskGroup) async{
+  Future<bool> _updateTaskGroupDB(TaskGroup taskGroup) async{
     int count = await _databaseManager.updateTaskGroup(taskGroup);
 
     return count != 0;
   }
 
-  Future<bool> deleteTaskGroupDB(TaskGroup taskGroup) async{
+  Future<bool> _deleteTaskGroupDB(TaskGroup taskGroup) async{
     int count = await _databaseManager.deleteTaskGroup(taskGroup);
 
     return count != 0;
@@ -182,36 +192,40 @@ class TaskModel extends ConnectedModel{
   //   pref.setString('taskGroups', json.encode(_taskGroups.map((TaskGroup taskGroup) => taskGroup.toMap()).toList()));
   // }
 
-  Future<bool> addTaskDB(Task task) async{
+  Future<bool> _addTaskDB(Task task) async{
     task.id = await _databaseManager.addTask(task);
 
     return task.id != -1;
   }
 
-  Future<bool> updateTaskDB(Task task) async{
+  Future<bool> _updateTaskDB(Task task) async{
     int count = await _databaseManager.updateTask(task);
 
     return count != 0;
   }
 
-  Future<bool> deleteTaskDB(Task task) async{
+  Future<List<Task>> _getAllTasksDB(int taskGroupId) async{
+    return await _databaseManager.getAllTasksWithTaskGroupId(taskGroupId);
+  }
+
+  Future<bool> _deleteTaskDB(Task task) async{
     int count = await _databaseManager.deleteTask(task);
 
     return count != 0;
   }
 
-  Future fetchTasks() async{
-    toggleLoading(true);
+  // Future fetchTasks() async{
+  //   toggleLoading(true);
 
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    // pref.clear();
-    String d = pref.getString('taskGroups');
-    if(d != null){
-      List data = json.decode(d);
-      data.forEach((item) {
-        _taskGroups.add(TaskGroup.fromMap(item));
-      }); 
-    }
-    toggleLoading(false);
-  }
+  //   SharedPreferences pref = await SharedPreferences.getInstance();
+  //   // pref.clear();
+  //   String d = pref.getString('taskGroups');
+  //   if(d != null){
+  //     List data = json.decode(d);
+  //     data.forEach((item) {
+  //       _taskGroups.add(TaskGroup.fromMap(item));
+  //     }); 
+  //   }
+  //   toggleLoading(false);
+  // }
 }

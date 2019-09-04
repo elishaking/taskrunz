@@ -213,8 +213,7 @@ class _AddTaskGroupPageState extends State<AddTaskGroupPage> {
                   numTask: 0,
                   numTasksCompleted: 0,
                   color: _colors[_selectedIdx],
-                  progressPercent: 0,
-                  tasks: []
+                  progressPercent: 0
                   // dateTime: DateTime.now(),
                 )).then((_){
                   Navigator.of(context).pop();

@@ -14,6 +14,7 @@ class DatabaseManager {
 
   static const TASK_TABLE = "taskTable";
   static const ID = "id";
+  static const TASK_GROUP_ID = "taskGroupId";
   static const String INFO = "info";
   static const String TIME_CREATED = "timeCreated";
   static const String TASK_STEPS = "taskSteps";
@@ -154,6 +155,19 @@ class DatabaseManager {
     final data = await _database.query(DatabaseManager.TASK_TABLE, where: "${DatabaseManager.TIME_CREATED} == ${formatDateTime(dateTime)}");
 
     return Task.fromMap(data[0]);
+  }
+
+  /// get all [Task]s from database with a given [TaskGroup] [id]
+  Future<List<Task>> getAllTasksWithTaskGroupId(int taskGroupId) async{
+    final data = await _database.query(DatabaseManager.TASK_TABLE, where: "${DatabaseManager.TASK_GROUP_ID} == $taskGroupId");
+
+    List<Task> tasks = List<Task>();
+    for(final node in data){
+      final task = Task.fromMap(node);
+      tasks.add(task);
+    }
+
+    return tasks;
   }
 
   /// save [Task] to database and return its [id]

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
 class TaskGroup{
@@ -10,22 +12,23 @@ class TaskGroup{
   double progressPercent;
   List<Task> tasks = List<Task>();
 
-  TaskGroup({this.id, this.icon, this.name, this.numTask, this.progressPercent, this.numTasksCompleted, this.color, this.tasks});
+  TaskGroup({this.id, this.icon, this.name, this.numTask, this.progressPercent, this.numTasksCompleted, this.color});
 
   Map<String, dynamic> toMap(){
     return {
       'idx': id,
-      'icon': [icon.codePoint, icon.fontFamily, icon.fontPackage, icon.matchTextDirection],
+      'icon': jsonEncode([icon.codePoint, icon.fontFamily, icon.fontPackage, icon.matchTextDirection]),
       'name': name,
       'numTask': numTask,
       'numTasksCompleted': numTasksCompleted,
       'color': color.value.toString(),
       'progressPercent': progressPercent.toString(),
-      'tasks': tasks.length > 0 ? tasks.map((Task task) => task.toMap()).toList() : []
+      // 'tasks': tasks.length > 0 ? tasks.map((Task task) => task.toMap()).toList() : []
     };
   }
 
   static TaskGroup fromMap(Map<String, dynamic> item){
+    item['icon'] = jsonDecode(item['icon']);
     return TaskGroup(
       id: item['idx'],
       icon: IconData(item['icon'][0], fontFamily: item['icon'][1], fontPackage: item['icon'][2], matchTextDirection: item['icon'][3]),
@@ -34,7 +37,7 @@ class TaskGroup{
       numTasksCompleted: item['numTasksCompleted'],
       color: Color(int.parse(item['color'])),
       progressPercent: double.parse(item['progressPercent']),
-      tasks: item['tasks'].map<Task>((task) => Task.fromMap(task)).toList()
+      // tasks: item['tasks'].map<Task>((task) => Task.fromMap(task)).toList()
     );
   }
 }
