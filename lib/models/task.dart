@@ -81,7 +81,7 @@ class Task{
       id: item['id'],
       info: item['info'],
       timeCreated: DateTime(int.parse(dateVals[0]), int.parse(dateVals[1]), int.parse(dateVals[2]), 0, 30),
-      done: item['done'],
+      done: item['done'] == 1 ? true : false,
       taskSteps: jsonDecode(item['taskSteps']).map<TaskStep>((taskStep) => TaskStep.fromMap(taskStep)).toList()
     );
   }
