@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -56,13 +58,17 @@ class _HomePageState extends State<HomePage> {
   final List<String> months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug',
   'Sep', 'Oct', 'Nov', 'Dec'];
 
+  ScrollController taskGroupScrollController = ScrollController(keepScrollOffset: true);
+
   @override
   initState(){
     // widget.model.fetchTasks().then((_){
     //   _taskGroups = widget.model.taskGroups;
     // });
     widget.model.getAllTaskGroupsDB().then((_){
-      _taskGroups = widget.model.taskGroups;
+      setState(() {
+       _taskGroups = widget.model.taskGroups; 
+      });
     });
     super.initState();
   }
@@ -104,7 +110,7 @@ class _HomePageState extends State<HomePage> {
             // SizedBox(height: 5,),
             // customText.BodyText(text: "You have 3 tasks today"),
             SizedBox(height: getSize(context, 30),),
-            customText.BodyText(text: "${months[_date.month].toUpperCase()} ${_date.day}, ${_date.year}", fontWeight: FontWeight.bold,),
+            customText.BodyText(text: "${months[_date.month - 1].toUpperCase()} ${_date.day}, ${_date.year}", fontWeight: FontWeight.bold,),
             SizedBox(height: 5,),
             SizedBox(height: 10),
             ScopedModelDescendant<MainModel>(
@@ -118,9 +124,19 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: (){
+          final previousOffset = taskGroupScrollController.offset;
           Navigator.of(context).push(MaterialPageRoute(
             builder: (BuildContext context) => AddTaskGroupPage(_taskGroups)
-          ));
+          )).then((onValue){
+            Timer(Duration(milliseconds: 500), (){
+              taskGroupScrollController.position.jumpTo(previousOffset);
+              // print(taskGroupScrollController.position.moveTo(to));
+              final int scrollTime = 500 + taskGroupScrollController.position.extentAfter.toInt();
+              taskGroupScrollController.position.moveTo(taskGroupScrollController.position.maxScrollExtent, duration: Duration(milliseconds: scrollTime > 3000 ? 3000 : scrollTime), curve: Curves.decelerate).then((onValue){
+                print(taskGroupScrollController.offset);
+              });
+            });
+          });
         },
       ),
     );
@@ -128,26 +144,33 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildTaskGroups(BuildContext context, MainModel model) {
     if(model.isLoading){
-      return Expanded(
-        child: Center(
-          child: CircularProgressIndicator(),
-        ),
+      return Container(
+        padding: EdgeInsets.only(top: getSize(context, 100)),
+        alignment: Alignment.center,
+        child: CircularProgressIndicator(),
       );
     } else if(model.taskGroups.length == 0) {
-      return Expanded(
-        child: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Icon(Icons.no_sim, size: getSize(context, 200), color: Colors.white.withOpacity(0.3),),
-              customText.BodyText(text: "No Tasks Yet", fontWeight: FontWeight.w700,)
-            ],
-          )
-        ),
+      return Container(
+        padding: EdgeInsets.only(top: getSize(context, 100)),
+        alignment: Alignment.center,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Icon(Icons.no_sim, size: getSize(context, 200), color: Colors.white.withOpacity(0.3),),
+            customText.BodyText(text: "No Tasks Yet", fontWeight: FontWeight.w700,)
+          ],
+        )
       );
     } else {
+      // return ListView(
+      //   controller: taskGroupScrollController,
+      //   scrollDirection: Axis.horizontal,
+      //   shrinkWrap: true,
+      //   children: List.generate(_taskGroups.length, (int index) => _buildTaskGroup(context, _taskGroups[index])),
+      // );
       return SingleChildScrollView(
         scrollDirection: Axis.horizontal,
+        controller: taskGroupScrollController,
         child: Row(
           children: List.generate(_taskGroups.length, (int index) => _buildTaskGroup(context, _taskGroups[index])),
         ),
@@ -178,6 +201,7 @@ class _HomePageState extends State<HomePage> {
           children: <Widget>[
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              // mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 // Hero(
                 //   tag: 'icon' + taskGroup.idx.toString(),
@@ -203,6 +227,7 @@ class _HomePageState extends State<HomePage> {
                 //     child: 
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    // mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       Stack(
                         children: <Widget>[

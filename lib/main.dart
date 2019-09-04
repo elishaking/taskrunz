@@ -28,6 +28,10 @@ class MyApp extends StatelessWidget {
           // Notice that the counter didn't reset back to zero; the application
           // is not restarted.
           primaryColor: Color.fromRGBO(41, 51, 92, 1),
+          buttonColor: Color.fromRGBO(41, 51, 92, 1),
+          floatingActionButtonTheme: FloatingActionButtonThemeData(
+            backgroundColor: Color.fromRGBO(41, 51, 92, 1)
+          ),
           // accentColor: Colors.orange,
           fontFamily: 'Nunito'
         ),
