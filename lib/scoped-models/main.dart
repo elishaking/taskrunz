@@ -141,12 +141,14 @@ class TaskModel extends ConnectedModel{
 
     if(taskGroup.tasks[index].done)
       taskGroup.numTasksCompleted--;
+    
+    await _deleteTaskDB(taskGroup.tasks[index]);
+    
     taskGroup.tasks.removeAt(index);
     taskGroup.numTask--;
     taskGroup.progressPercent = taskGroup.numTask == 0 ? 0 : (taskGroup.numTasksCompleted / taskGroup.numTask) * 100;
 
     await _updateTaskGroupDB(taskGroup);
-    await _deleteTaskDB(taskGroup.tasks[index]);
 
     toggleLoading(false);
   }
