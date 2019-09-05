@@ -124,18 +124,23 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: (){
-          final previousOffset = taskGroupScrollController.offset;
+          double previousOffset = 0;
+          if(taskGroupScrollController.hasClients)
+            previousOffset = taskGroupScrollController.offset;
           Navigator.of(context).push(MaterialPageRoute(
             builder: (BuildContext context) => AddTaskGroupPage(_taskGroups)
           )).then((onValue){
-            Timer(Duration(milliseconds: 500), (){
-              taskGroupScrollController.position.jumpTo(previousOffset);
+            WidgetsBinding.instance.addPostFrameCallback((v){
+              if(previousOffset != 0) taskGroupScrollController.position.jumpTo(previousOffset);
               // print(taskGroupScrollController.position.moveTo(to));
               final int scrollTime = 500 + taskGroupScrollController.position.extentAfter.toInt();
               taskGroupScrollController.position.moveTo(taskGroupScrollController.position.maxScrollExtent, duration: Duration(milliseconds: scrollTime > 3000 ? 3000 : scrollTime), curve: Curves.decelerate).then((onValue){
                 print(taskGroupScrollController.offset);
               });
             });
+            // Timer(Duration(milliseconds: 500), (){
+              
+            // });
           });
         },
       ),
