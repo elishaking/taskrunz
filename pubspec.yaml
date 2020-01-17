@@ -14,17 +14,20 @@ description: Stay on your tasks
 version: 0.0.1+1
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.2.2 <3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
 
-  sqflite: ^1.0.0
-  path_provider: ^0.4.1
+  sqflite: any
+  path_provider: any
 
-  scoped_model: ^1.0.1
-  shared_preferences: ^0.5.2
+  scoped_model: any
+  shared_preferences: any
+  flutter_local_notifications: any
+  # image_picker: ^0.6.1+4
+  # dropdownfield: ^0.0.2
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -57,6 +60,7 @@ flutter:
   assets:
    - assets/passport.png
    - assets/logo.png
+  #  - assets/notification_icon.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.io/assets-and-images/#resolution-aware.

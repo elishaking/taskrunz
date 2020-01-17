@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:taskrunz/models/task.dart';
+import 'package:taskrunz/scoped-models/main.dart';
 
-import '../scoped-models/main.dart';
-import '../models/task.dart';
-
-class AddTask extends StatefulWidget{
+class AddTaskStep extends StatefulWidget {
   final TaskGroup taskGroup;
-  final Map<String, List<Task>> taskWithDates;
-  final String today;
+  final int taskIndex;
 
-  AddTask(this.taskGroup, this.taskWithDates, this.today);
+
+  AddTaskStep(this.taskGroup, this.taskIndex);
 
   @override
-  _AddTaskState createState() => _AddTaskState();
+  _AddTaskStepState createState() => _AddTaskStepState();
 }
 
-class _AddTaskState extends State<AddTask> {
+class _AddTaskStepState extends State<AddTaskStep> {
   GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   String _text;
 
@@ -25,8 +24,6 @@ class _AddTaskState extends State<AddTask> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        // title: Text('New Task', style: TextStyle(color: widget.taskGroup.color),),
-        centerTitle: true,
         iconTheme: IconThemeData(
           color: widget.taskGroup.color
         ),
@@ -41,11 +38,11 @@ class _AddTaskState extends State<AddTask> {
                 TextFormField(
                   autofocus: true,
                   decoration: InputDecoration(
-                    labelText: "Task",
+                    labelText: "Task Step",
 
                   ),
                   validator: (String value){
-                    if(value.isEmpty) return 'Enter a new Task';
+                    if(value.isEmpty) return 'Enter Task step';
                   },
                   onSaved: (String value){
                     _text = value;
@@ -59,28 +56,17 @@ class _AddTaskState extends State<AddTask> {
       floatingActionButton: ScopedModelDescendant<MainModel>(
         builder: (BuildContext context, Widget child, MainModel model){
           return FloatingActionButton(
-            heroTag: 'add_task',
+            // heroTag: 'add_task_step',
             child: Icon(Icons.add),
             backgroundColor: widget.taskGroup.color,
             onPressed: (){
               if(_formKey.currentState.validate()){
                 _formKey.currentState.save();
-
-                Task newTask = Task(
-                  id: widget.taskGroup.tasks.length,
-                  taskGroupId: widget.taskGroup.id,
-                  info: _text,
-                  timeCreated: DateTime.now(),
-                  taskSteps: [],
-                  done: false
-                );
-
-                if(widget.taskWithDates[widget.today] == null){
-                  widget.taskWithDates[widget.today] = List<Task>();
-                }
-                widget.taskWithDates[widget.today].add(newTask);
                 
-                model.addTask(newTask, widget.taskGroup).then((_){
+                model.addTaskStep(widget.taskGroup.tasks[widget.taskIndex], TaskStep(
+                  info: _text,
+                  done: false
+                )).then((_){
                   Navigator.of(context).pop();
                 });
               }

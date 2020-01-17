@@ -1,0 +1,1 @@
+- [ ] make task-step edittable --> in the **buildTaskStep** function

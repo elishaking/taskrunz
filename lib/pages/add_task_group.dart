@@ -6,22 +6,28 @@ import '../models/task.dart';
 
 import '../widgets/custom_text.dart' as customText;
 
-class NewTaskGroupPage extends StatefulWidget{
+class AddTaskGroupPage extends StatefulWidget{
   final List<TaskGroup> taskGroups;
 
-  NewTaskGroupPage(this.taskGroups);
+  AddTaskGroupPage(this.taskGroups);
 
   @override
-  _NewTaskGroupPageState createState() => _NewTaskGroupPageState();
+  _AddTaskGroupPageState createState() => _AddTaskGroupPageState();
 }
 
-class _NewTaskGroupPageState extends State<NewTaskGroupPage> {
+class _AddTaskGroupPageState extends State<AddTaskGroupPage> {
   GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   String _text;
   List _colors = [
     Colors.orange,
     Colors.green,
-    Colors.purple
+    Colors.purple,
+    Colors.lightBlue,
+    Colors.blue,
+    Colors.blueAccent,
+    // Colors.yellow,
+    Colors.deepOrangeAccent,
+    Colors.black
   ];
   int _selectedIdx = 0;
   List<bool> _selected = [];
@@ -60,7 +66,7 @@ class _NewTaskGroupPageState extends State<NewTaskGroupPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('New Task Group'),
+        // title: Text('New Task Group'),
         centerTitle: true,
         elevation: 0,
       ),
@@ -76,6 +82,8 @@ class _NewTaskGroupPageState extends State<NewTaskGroupPage> {
                 child: Column(
                   children: <Widget>[
                     TextFormField(
+                      autofocus: true,
+
                       decoration: InputDecoration(
                         labelText: "Task Group",
                         hintText: "e.g. Work, Home, Personal"
@@ -97,6 +105,7 @@ class _NewTaskGroupPageState extends State<NewTaskGroupPage> {
                 shrinkWrap: true,
                 crossAxisCount: 5,
                 crossAxisSpacing: 20,
+                mainAxisSpacing: 20,
                 children: List.generate(_colors.length, (int index) => GestureDetector(
                   onTap: (){
                     if(index == _selectedIdx) return;
@@ -145,6 +154,7 @@ class _NewTaskGroupPageState extends State<NewTaskGroupPage> {
                 shrinkWrap: true,
                 crossAxisCount: 5,
                 crossAxisSpacing: 20,
+                mainAxisSpacing: 20,
                 children: List.generate(_colors.length, (int index) => GestureDetector(
                   onTap: (){
                     if(index == _selectedIconIdx) return;
@@ -197,14 +207,13 @@ class _NewTaskGroupPageState extends State<NewTaskGroupPage> {
               if(_formKey.currentState.validate()){
                 _formKey.currentState.save();
                 model.addTaskGroup(TaskGroup(
-                  idx: widget.taskGroups.length,
+                  id: widget.taskGroups.length,
                   icon: _icons[_selectedIconIdx],
                   name: _text,
                   numTask: 0,
                   numTasksCompleted: 0,
                   color: _colors[_selectedIdx],
-                  progressPercent: 0,
-                  tasks: []
+                  progressPercent: 0
                   // dateTime: DateTime.now(),
                 )).then((_){
                   Navigator.of(context).pop();
